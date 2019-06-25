@@ -20,8 +20,13 @@ userManagement.post('/addUser', auth.addUserToAuthList, (req, res) => {
 
 userManagement.get('/logout', [
 	(req, res, next) => {	
-		// const userinfo = auth.getUserInfo(req.session.id);	
-		next();
+		if(gameRooms[index].game.gameStarted === true){
+			res.status(403).send('you can not logout, the game started');
+			return;
+		}
+		else{
+			next();
+		}	
 	}, 
 	auth.removeUserFromAuthList, 
 	(req, res) => {

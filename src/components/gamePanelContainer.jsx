@@ -20,7 +20,8 @@ export default class gamePanelContainer extends React.Component {
     
     render() {        
         if (this.state.isInGameRoom) {
-            return (<GameRoom currGame = {this.state.currGame}/>)
+            console.log(this.state.currGame);
+            return (<GameRoom currGame = {this.state.currGame} disableLogout = {this.props.disableLogout}/>)
         }
         return (
             <div>
@@ -47,6 +48,7 @@ export default class gamePanelContainer extends React.Component {
     }
 
     setCurrGame(game){
+        console.log("in setCurrGame!");
         this.setState(()=>({currGame : game}));  
     }
 }

@@ -8,6 +8,7 @@ export default class BaseContainer extends React.Component {
         super(...args);
         this.state = {
             showLogin: true,
+            disLogout : false,
             currentUser: {
                 name: ''
             }
@@ -17,6 +18,7 @@ export default class BaseContainer extends React.Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler= this.logoutHandler.bind(this);
+        this.disableLogout = this.disableLogout.bind(this);
 
         this.getUserName();
     }
@@ -36,6 +38,10 @@ export default class BaseContainer extends React.Component {
     handleLoginError() {
         console.error('login failed');
         this.setState(()=>({showLogin:true}));
+    }
+
+    disableLogout(flag){
+        this.setState(()=>({disLogout:flag}));
     }
 
     getUserName() {
@@ -67,9 +73,9 @@ export default class BaseContainer extends React.Component {
             <div className="chat-base-container">
                 <div className="user-info-area">
                     Hello {this.state.currentUser.name}
-                    <button className="logout btn" onClick={this.logoutHandler}>Logout</button>
+                    <button className="logout btn" onClick={this.logoutHandler} disabled={this.state.disableLogout}>Logout</button>
                 </div>
-                <GamePanelContaier />                
+                <GamePanelContaier disableLogout = {this.state.disableLogout}/>                
             </div>
         )
     }

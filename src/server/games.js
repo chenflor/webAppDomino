@@ -75,7 +75,7 @@ function deleteGame(req, res, next) {
 	}
 	else {						
 		gamesList.splice(index, 1);
-		console.log(gamesList);
+		// console.log(gamesList);
 		next();
 	}
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import dominoImage from './resources/domino.jpg';
+import GamePanelContaier from './gamePanelContainer.jsx';
 
 export default class GameRoom extends React.Component {
     constructor(args) {
         super(...args);
         this.state = {
+            playerQuit : false
         };
         this.quitHandler= this.quitHandler.bind(this);
 
@@ -21,10 +22,24 @@ export default class GameRoom extends React.Component {
         }
     }
     
-    render() {        
-        return (<div className="game-room-wrpper">
+    render() {  
+        if(this.state.playerQuit){
+            return (
+                <GamePanelContaier disableLogout = {this.props.disableLogout}/>    
+            );
+        }   
+        else{
+            return (<div className="game-room-wrpper">
             <button className="logout btn" onClick={this.quitHandler}>quit</button>
         </div>);
+        }   
+        
+    }
+
+    hasGameStarted(){
+        if(this.props.currGame.gameStarted){
+            this.props.disableLogout(true);
+        }
     }
 
     quitHandler(){
@@ -39,6 +54,9 @@ export default class GameRoom extends React.Component {
             }           
             else if (!response.ok) {             
                 throw response;
+            }
+            else{
+                this.setState(()=>({playerQuit:true}));
             }
         });
         return false; 
