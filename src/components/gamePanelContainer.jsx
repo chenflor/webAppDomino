@@ -38,8 +38,11 @@ export default class gamePanelContainer extends React.Component {
     }
 
 
-    handleSuccessedRegister() {
-        this.setState(()=>({isInGameRoom:true}));        
+    handleSuccessedRegister(game) {
+        console.log("handleSuccessedRegister");
+        console.log(game);
+        
+        this.setState(()=>({isInGameRoom:true, currGame : game}));        
     }
 
     handleRegisterError() {

@@ -13,7 +13,8 @@ gamesManagement.get('/allGames', (req, res) => {
 });
 
 gamesManagement.post('/registerToGame', games.registerToGame,(req, res) => {
-	res.sendStatus(200);
+	console.log(res.locals.currentGame);
+	res.json(res.locals.currentGame);
 });
 
 gamesManagement.post('/deleteGame', games.deleteGame,(req, res) => {

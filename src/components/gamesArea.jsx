@@ -73,12 +73,18 @@ export default class gamesArea extends React.Component {
         .then(response => {            
             if (!response.ok) {
                 this.props.handleRegisterError();                
+                console.log("GGGGGGG");
                 throw response;
             }
-            this.props.handleSuccessedRegister();
-            this.props.setCurrGame(game);
-            this.setState(()=>({sendInProgress: false}));              
-        });
+            console.log("HHHHHHHHHH");
+            return response.json();
+                    
+        }).then(curGame => {
+            console.log(curGame);
+            this.props.handleSuccessedRegister(curGame);
+            this.props.setCurrGame(curGame);
+            this.setState(()=>({sendInProgress: false}));      
+        }).catch(err => {throw err});
         return false; 
     }
 

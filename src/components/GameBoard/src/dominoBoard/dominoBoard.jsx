@@ -236,4 +236,8 @@ class DominoBoard extends React.Component{
   }
 }
 
+DominoBoard.propTypes ={
+  
+};
+
 export default DominoBoard;
