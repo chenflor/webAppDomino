@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GamePanelContaier from './gamePanelContainer.jsx';
+import Board from './GameBoard/src/dominoBoard/dominoBoard.jsx'
+import DominoBoard from './GameBoard/src/dominoBoard/dominoBoard.jsx';
 
 export default class GameRoom extends React.Component {
     constructor(args) {
@@ -25,12 +27,14 @@ export default class GameRoom extends React.Component {
     render() {  
         if(this.state.playerQuit){
             return (
-                <GamePanelContaier disableLogout = {this.props.disableLogout}/>    
+                <GamePanelContaier disableLogout = {this.props.disableLogout}/>   
+                
             );
         }   
         else{
             return (<div className="game-room-wrpper">
             <button className="logout btn" onClick={this.quitHandler}>quit</button>
+            <DominoBoard/> 
         </div>);
         }   
         

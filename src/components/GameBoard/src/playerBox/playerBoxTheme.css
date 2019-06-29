@@ -1,0 +1,20 @@
+.playerSide{
+    width: 40%;
+    height: 100%;
+    position: relative;
+}
+.playerBox{
+    width: 80%;
+    height: 25%;
+    background:rgb(186, 186, 241);
+    margin-top:5% ;
+    margin-left: 2%;
+    
+}
+.playersTitle{
+    background-color: rgb(72, 72, 148);
+}
+.myDominos{
+    display: flex;
+    justify-content: space-between;
+}

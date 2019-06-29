@@ -81,6 +81,7 @@ export default class BaseContainer extends React.Component {
     }
 
     logoutHandler() {
+        console.log("In logout handler");
         fetch('/users/logout', {method: 'GET', credentials: 'include'})
         .then(response => {
             if (!response.ok) {

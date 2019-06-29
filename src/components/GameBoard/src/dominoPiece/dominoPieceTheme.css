@@ -1,0 +1,57 @@
+.dominoPiece{
+    background-color: aliceblue;
+    width: 1.5rem;
+    height: 3rem;
+    border-radius: 20%;
+
+}
+
+.dominoPiece-selected{
+    border:2px solid rgba(255, 255, 0, 0.534);
+}
+.isNotValidPiece{
+    opacity: 0.5;
+}
+
+.visible {
+    background-color: black;
+} 
+
+.dot{
+    margin: 5%;
+	border-radius: 50%;
+	width: 0.1rem;
+	height: 0.1rem;
+}
+.upSection{
+    display: inline-block;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.buttomSection{
+    display: inline-block;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.line{
+    color: black;
+    display: block;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+}
+
+.dominoPiece-optional{
+    border: 1px solid rgb(27, 177, 27);
+}
+
+.isPotential{
+    border:2px solid rgba(255, 94, 0, 0.534);
+}
+
+.horizontal{
+    transform: rotate(-90deg);
+}

@@ -24,10 +24,13 @@ function addUserToAuthList(req, res, next) {
 	}
 }
 
-function removeUserFromAuthList(req, res, next) {	
+function removeUserFromAuthList(req, res, next) {
+	console.log("In here");	
 	if (userList[req.session.id] === undefined) {
+		console.log("In removeUserFromAuthList");
 		res.status(403).send('user does not exist');
-	} else {						
+	} else {
+		console.log("In removeUserFromAuthList");						
 		delete userList[req.session.id];
 		next();
 	}

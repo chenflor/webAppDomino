@@ -1,0 +1,20 @@
+.playingBoard{
+    width: 44rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    height: 24rem;
+    border: 2px solid black;
+    margin-left: 5%;
+    margin-top: 2%;
+    margin-right: 2%;
+}
+.playingBoardRow{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    float: left;
+}
+

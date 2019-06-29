@@ -12,7 +12,4 @@ gameRoomsManagement.post('/quitGame', gameRooms.quitGame, (req, res) => {
 // 	res.json(games.getAllGames());
 // });
 
-
-
-
 module.exports = gameRoomsManagement;
