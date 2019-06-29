@@ -25,7 +25,9 @@ export default class gamesArea extends React.Component {
         }
     }
 
-    render() {       
+    render() {
+        console.log("In gamesArea"); 
+        console.log(this.state.games);       
         return(
             <form className="games-area-wrpper">
             <h3>Games</h3>

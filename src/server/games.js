@@ -47,11 +47,19 @@ function registerToGame(req, res, next) {
 		res.status(403).send('game already started');
 		return;
 	}
+	else if(gamesList[index].registeredPlayers >= gamesList[index].numOfPlayers){
+		res.status(403).send('Max number of players in game');
+		return;
+	}
 	else{
 		gamesList[index].registeredPlayers = gamesList[index].registeredPlayers + 1;
 		let i = gameRooms.findOrCreateGameRoom(gamesList[index]);
 		gameRooms.addPlayerToGameRoom(i,auth.getUserInfo(req.session.id).name)
-		if(gamesList[index].registeredPlayers === gamesList[index].numOfPlayers){
+		console.log(gamesList[index].registeredPlayers);
+		console.log(gamesList[index].numOfPlayers);
+
+		if(gamesList[index].registeredPlayers == gamesList[index].numOfPlayers){
+			console.log("Here");
 			gamesList[index].gameStarted = true;
 			gameRooms.startGame();
 		}
