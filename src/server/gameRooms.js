@@ -44,7 +44,7 @@ function quitGame(req, res, next){
 }
 
 function startGame(){
-
+    
 }
 
 function deleteGameRoom(){
