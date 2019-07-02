@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import GamePanelContaier from './gamePanelContainer.jsx';
 import DominoBoard from './GameBoard/src/dominoBoard/dominoBoard.jsx';
+import PropTypes from 'prop-types';
 
 export default class GameRoom extends React.Component {
     constructor(args) {
         super(...args);
         this.state = {
-            playerQuit : false
+            playerQuit : false,
+            gameStarted : false
         };
         this.quitHandler= this.quitHandler.bind(this);
         // this.hasGameStarted = this.hasGameStarted.bind(this);
@@ -15,6 +17,8 @@ export default class GameRoom extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({playerQuit : this.state.playerQuit, gameStarted : this.props.currGame.gameStarted})
+        // this.getGames();
     }
 
     componentWillUnmount() {
@@ -31,10 +35,16 @@ export default class GameRoom extends React.Component {
             );
         }   
         else{
+            let dominoBoard =(<h2>"Game has not started"</h2>);
+            console.log("this.props.currGame");
+            console.log(this.props.currGame);
+            if (this.state.gameStarted){
+                dominoBoard = (<DominoBoard/>);
+            }
             return (<div className="game-room-wrpper">
             <button className="logout btn" onClick={this.quitHandler}>quit</button>
-            <DominoBoard/> 
-        </div>);
+            <React.Fragment>{dominoBoard}</React.Fragment>
+            </div>);
         }   
         
     }
@@ -66,3 +76,7 @@ export default class GameRoom extends React.Component {
     }
     
 }
+
+GameRoom.propTypes ={
+    currGame : PropTypes.object
+};

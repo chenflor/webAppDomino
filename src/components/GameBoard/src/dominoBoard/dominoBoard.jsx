@@ -24,6 +24,7 @@ class DominoBoard extends React.Component{
     this.state = {
       dominosBoard               : this.makeEmptyBoard(),
       validNumbers               : [0,1,2,3,4,5,6],
+      players                    : {}
     };
   }
   
@@ -36,6 +37,9 @@ class DominoBoard extends React.Component{
       }
     }
     return board;
+  }
+  componentDidMount(){
+    
   }
   
   whereDominoCanBeinserted(domino){
@@ -235,5 +239,9 @@ class DominoBoard extends React.Component{
     )
   }
 }
+
+DominoBoard.propTypes ={
+  
+};
 
 export default DominoBoard;

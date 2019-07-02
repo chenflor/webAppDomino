@@ -54,7 +54,7 @@ function removePlayerFromRoom(index){
 }
 
 function startGame(){
-
+    
 }
 
 function deleteGameRoom(){

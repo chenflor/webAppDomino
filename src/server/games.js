@@ -60,6 +60,7 @@ function registerToGame(req, res, next) {
 			gameRooms.startGame();
 		}
 	}
+	res.locals.currentGame = gamesList[index];
 	next();
 }
 

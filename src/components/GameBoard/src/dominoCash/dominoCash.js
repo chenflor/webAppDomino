@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import dominoCashTheme from "./dominoCashTheme.css";
 import propTypes from "prop-types"
-// import * as math from 'mathjs'
 
 
 class DominoCash extends Component {
