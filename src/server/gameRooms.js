@@ -37,6 +37,7 @@ function quitGame(playerName,gameName){
         if(gameRooms[index].game.gameStarted === true){
             return false;
         }
+        else{
             gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
             let playerI = gameRooms[index].listOfPlayers.find((name) =>{
                 return (name === playerName)});
@@ -54,7 +55,7 @@ function removePlayerFromRoom(index){
 }
 
 function startGame(){
-    
+
 }
 
 function deleteGameRoom(){
