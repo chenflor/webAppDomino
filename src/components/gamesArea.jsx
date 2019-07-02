@@ -25,9 +25,7 @@ export default class gamesArea extends React.Component {
         }
     }
 
-    render() {
-        console.log("In gamesArea"); 
-        console.log(this.state.games);       
+    render() {     
         return(
             <form className="games-area-wrpper">
             <h3>Games</h3>
@@ -62,11 +60,9 @@ export default class gamesArea extends React.Component {
     }
 
     registerToGame(game){
-        // e.preventDefault();
         this.setState(()=>({sendInProgress: true}));
         fetch('/games/registerToGame', {
             method: 'POST',
-            // body: this.thisName.innerHTML,
             body: game.gameName,
             credentials: 'include'
         })
@@ -91,7 +87,6 @@ export default class gamesArea extends React.Component {
         })
         .then(response => { 
             if (response.status === 403) {
-                // console.log(response.body);
                 response.text().then((data) => alert(data));
             }           
             else if (!response.ok) {             

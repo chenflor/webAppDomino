@@ -54,12 +54,8 @@ function registerToGame(req, res, next) {
 	else{
 		gamesList[index].registeredPlayers = gamesList[index].registeredPlayers + 1;
 		let i = gameRooms.findOrCreateGameRoom(gamesList[index]);
-		gameRooms.addPlayerToGameRoom(i,auth.getUserInfo(req.session.id).name)
-		console.log(gamesList[index].registeredPlayers);
-		console.log(gamesList[index].numOfPlayers);
-
+		gameRooms.addPlayerToGameRoom(i,auth.getUserInfo(req.session.id).name);
 		if(gamesList[index].registeredPlayers == gamesList[index].numOfPlayers){
-			console.log("Here");
 			gamesList[index].gameStarted = true;
 			gameRooms.startGame();
 		}

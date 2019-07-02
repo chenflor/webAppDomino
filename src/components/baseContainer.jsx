@@ -8,7 +8,8 @@ export default class BaseContainer extends React.Component {
         super(...args);
         this.state = {
             showLogin: true,
-            disLogout : false,
+            // disLogout : false,
+            currGame: {},
             currentUser: {
                 name: ''
             }
@@ -18,7 +19,7 @@ export default class BaseContainer extends React.Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler= this.logoutHandler.bind(this);
-        this.disableLogout = this.disableLogout.bind(this);
+        this.setGameInBase = this.setGameInBase.bind(this);
 
         this.getUserName();
     }
@@ -40,8 +41,8 @@ export default class BaseContainer extends React.Component {
         this.setState(()=>({showLogin:true}));
     }
 
-    disableLogout(flag){
-        this.setState(()=>({disLogout:flag}));
+    setGameInBase(newGame){
+        this.setState(()=>({currGame:newGame}));
     }
 
     getUserName() {
@@ -75,19 +76,35 @@ export default class BaseContainer extends React.Component {
                     Hello {this.state.currentUser.name}
                     <button className="logout btn" onClick={this.logoutHandler} disabled={this.state.disableLogout}>Logout</button>
                 </div>
-                <GamePanelContaier disableLogout = {this.state.disableLogout}/>                
+                <GamePanelContaier setGameInBase = {this.setGameInBase}/>                
             </div>
         )
     }
 
+    // fetch('/users/logout', {method: 'GET', credentials: 'include'})
+            // .then(response => {
+            //     if (!response.ok) {
+            //         console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
+            //     }
+            // this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+            // })
     logoutHandler() {
-        console.log("In logout handler");
-        fetch('/users/logout', {method: 'GET', credentials: 'include'})
-        .then(response => {
-            if (!response.ok) {
-                console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
-            }
-            this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+        fetch('/users/logout', {
+            method: 'POST',
+            body: this.state.currGame.gameName,
+            credentials: 'include'
         })
+        .then(response => { 
+            if (response.status === 403) {
+                response.text().then((data) => alert(data));
+            }           
+            else if (!response.ok) {             
+                throw response;
+            }
+            else{
+                this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+            }
+        });
+        return false;      
     }
 }

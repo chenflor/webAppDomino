@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GamePanelContaier from './gamePanelContainer.jsx';
-import Board from './GameBoard/src/dominoBoard/dominoBoard.jsx'
 import DominoBoard from './GameBoard/src/dominoBoard/dominoBoard.jsx';
 
 export default class GameRoom extends React.Component {
@@ -11,11 +10,11 @@ export default class GameRoom extends React.Component {
             playerQuit : false
         };
         this.quitHandler= this.quitHandler.bind(this);
+        // this.hasGameStarted = this.hasGameStarted.bind(this);
 
     }
 
     componentDidMount() {
-        // this.getGames();
     }
 
     componentWillUnmount() {
@@ -25,10 +24,10 @@ export default class GameRoom extends React.Component {
     }
     
     render() {  
+        // this.hasGameStarted();
         if(this.state.playerQuit){
             return (
-                <GamePanelContaier disableLogout = {this.props.disableLogout}/>   
-                
+                <GamePanelContaier/>   
             );
         }   
         else{
@@ -40,14 +39,14 @@ export default class GameRoom extends React.Component {
         
     }
 
-    hasGameStarted(){
-        if(this.props.currGame.gameStarted){
-            this.props.disableLogout(true);
-        }
-    }
+    // hasGameStarted(){
+    //     if(this.props.currGame.gameStarted){
+    //         this.props.disableLogout(true);
+    //     }
+    // }
 
     quitHandler(){
-        fetch('/gameRooms/quitGame', {
+        fetch('/users/quitGame', {
             method: 'POST',
             body: this.props.currGame.gameName,
             credentials: 'include'

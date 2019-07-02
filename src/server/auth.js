@@ -1,3 +1,4 @@
+const gameRoomsComp = require('./gameRooms');
 const userList = {};
 
 function userAuthentication(req, res, next) {		
@@ -24,13 +25,10 @@ function addUserToAuthList(req, res, next) {
 	}
 }
 
-function removeUserFromAuthList(req, res, next) {
-	console.log("In here");	
+function removeUserFromAuthList(req, res, next) {	
 	if (userList[req.session.id] === undefined) {
-		console.log("In removeUserFromAuthList");
 		res.status(403).send('user does not exist');
-	} else {
-		console.log("In removeUserFromAuthList");						
+	} else {					
 		delete userList[req.session.id];
 		next();
 	}
@@ -49,5 +47,25 @@ function getAllUsers(){
 	  }
 	return userNameList;
 }
+function logout(req, res, next){
+	let ans = gameRoomsComp.quitGame(getUserInfo(req.session.id).name, req.body);
+    if(!ans){
+        res.status(403).send('you can not quit the game now');
+        return false;
+    }
+    else{
+		removeUserFromAuthList(req, res, next);
+    }
+}
+function quit(req, res, next){
+	let ans = gameRoomsComp.quitGame(getUserInfo(req.session.id).name, req.body);
+    if(!ans){
+        res.status(403).send('you can not quit the game now');
+        return false;
+    }
+	next();
+}
 
-module.exports = {userAuthentication, addUserToAuthList, removeUserFromAuthList, getUserInfo, getAllUsers}
+
+
+module.exports = {userAuthentication, addUserToAuthList, removeUserFromAuthList, getUserInfo, getAllUsers, logout, quit}

@@ -1,6 +1,10 @@
-const games = require('./games');
+// const auth = require('./auth');
 //gameRooms {game, listOfPlayers}
 const gameRooms = [];
+
+function getGameRoom(index){
+    return gameRooms[index];
+}
 
 function addPlayerToGameRoom(index, player){
     gameRooms[index].listOfPlayers.push(player);
@@ -24,23 +28,29 @@ function findOrCreateGameRoom(thisGame){
         };
         newIndex = gameRooms.push(gameRoom)-1;
     }
-    // console.log(gameRooms);
     return newIndex;
 }
 
-function quitGame(req, res, next){
-    let index = findRoom(req.body);
-    if(gameRooms[index].game.gameStarted === true){
-        res.status(403).send('you can not quit the game now');
-        return;
+function quitGame(playerName,gameName){
+    let index = findRoom(gameName);
+    if(index !== -1){
+        if(gameRooms[index].game.gameStarted === true){
+            return false;
+        }
+            gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
+            let playerI = gameRooms[index].listOfPlayers.find((name) =>{
+                return (name === playerName)});
+            gameRooms[index].listOfPlayers.splice(playerI,1);
+            return true;
+        }
     }
-    else{
-        gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
-        let playerI = gameRooms[index].listOfPlayers.find((name) =>{return (name === gameRooms[index].game.gameName)});
-        gameRooms[index].listOfPlayers.splice(playerI,1);
-        // console.log(gameRooms);
-    }
-    next();
+    return true;
+}
+
+function removePlayerFromRoom(index){
+    gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
+    let playerI = gameRooms[index].listOfPlayers.find((name) =>{return (name === gameRooms[index].game.gameName)});
+    gameRooms[index].listOfPlayers.splice(playerI,1);
 }
 
 function startGame(){
@@ -51,4 +61,4 @@ function deleteGameRoom(){
     
 }
 
-module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, quitGame, deleteGameRoom}
+module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, quitGame, deleteGameRoom, findRoom, getGameRoom, removePlayerFromRoom}
