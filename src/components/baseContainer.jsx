@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LoginModal from './login-modal.jsx';
 import GamePanelContaier from './gamePanelContainer.jsx';
+import GameRoom from './gameRoom.jsx';
 
 export default class BaseContainer extends React.Component {
     constructor(args) {
         super(...args);
         this.state = {
             showLogin: true,
+            isInGameRoom: false,
             // disLogout : false,
             currGame: {},
             currentUser: {
@@ -19,21 +21,31 @@ export default class BaseContainer extends React.Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler= this.logoutHandler.bind(this);
-        this.setGameInBase = this.setGameInBase.bind(this);
+        this.exitGameRoom = this.exitGameRoom.bind(this);
+        this.enterGameRoom = this.enterGameRoom.bind(this);
 
         this.getUserName();
     }
     
     render() {        
         if (this.state.showLogin) {
-            return (<LoginModal loginSuccessHandler={this.handleSuccessedLogin} loginErrorHandler={this.handleLoginError}/>)
+            return (<LoginModal 
+                loginSuccessHandler={this.handleSuccessedLogin} 
+                loginErrorHandler={this.handleLoginError}/>);
+        }
+        else if(this.state.isInGameRoom){
+            console.log("In Game Room");
+            return (<GameRoom currGame = {this.state.currGame}/>);
         }
         return this.renderGamePanel();
     }
 
+    exitGameRoom(){
+        this.setState({isInGameRoom : false, currGame :{}});        
 
+    }
     handleSuccessedLogin() {
-        this.setState(()=>({showLogin:false}), this.getUserName);        
+        this.setState({showLogin:false, currentUser : {name :this.getUserName}});        
     }
 
     handleLoginError() {
@@ -41,8 +53,8 @@ export default class BaseContainer extends React.Component {
         this.setState(()=>({showLogin:true}));
     }
 
-    setGameInBase(newGame){
-        this.setState(()=>({currGame:newGame}));
+    enterGameRoom(newGame){
+        this.setState(()=>({currGame:newGame,isInGameRoom : true}));
     }
 
     getUserName() {
@@ -76,7 +88,7 @@ export default class BaseContainer extends React.Component {
                     Hello {this.state.currentUser.name}
                     <button className="logout btn" onClick={this.logoutHandler} disabled={this.state.disableLogout}>Logout</button>
                 </div>
-                <GamePanelContaier setGameInBase = {this.setGameInBase}/>                
+                <GamePanelContaier exitGameRoom = {this.exitGameRoom} enterGameRoom = {this.enterGameRoom}/>                
             </div>
         )
     }

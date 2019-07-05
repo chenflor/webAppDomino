@@ -38,7 +38,7 @@ function quitGame(playerName,gameName){
             return false;
         }
         else{
-            gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
+            gameRooms[index].game.registeredPlayersCounter--;
             let playerI = gameRooms[index].listOfPlayers.find((name) =>{
                 return (name === playerName)});
             gameRooms[index].listOfPlayers.splice(playerI,1);
@@ -49,7 +49,7 @@ function quitGame(playerName,gameName){
 }
 
 function removePlayerFromRoom(index){
-    gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
+    gameRooms[index].game.registeredPlayersCounter--;
     let playerI = gameRooms[index].listOfPlayers.find((name) =>{return (name === gameRooms[index].game.gameName)});
     gameRooms[index].listOfPlayers.splice(playerI,1);
 }

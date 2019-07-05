@@ -4,24 +4,17 @@ import CreateNewGame from './createNewGame.jsx';
 import PlayersArea from './playersArea.jsx';
 import GamesArea from './gamesArea.jsx';
 import GameRoom from './gameRoom.jsx';
+import propTypes from "prop-types"
 
 export default class gamePanelContainer extends React.Component {
     constructor(args) {
         super(...args);
-        this.state = {
-            isInGameRoom: false,
-            currGame: {}
-        };
-        
         this.handleSuccessedRegister = this.handleSuccessedRegister.bind(this);
         this.handleRegisterError = this.handleRegisterError.bind(this);
-        this.setCurrGame = this.setCurrGame.bind(this);
+        this.enterGameRoom = this.enterGameRoom.bind(this);
     }
     
     render() {        
-        if (this.state.isInGameRoom) {
-            return (<GameRoom currGame = {this.state.currGame}/>)
-        }
         return (
             <div>
                 <h1>Game Room</h1>
@@ -30,7 +23,7 @@ export default class gamePanelContainer extends React.Component {
                     <PlayersArea/>
                     <GamesArea handleSuccessedRegister={this.handleSuccessedRegister}
                      handleRegisterError={this.handleRegisterError}
-                     setCurrGame={this.setCurrGame}/>
+                     enterGameRoom={this.enterGameRoom}/>
                 </div>
             </div>
         );
@@ -40,17 +33,21 @@ export default class gamePanelContainer extends React.Component {
     handleSuccessedRegister(game) {
         console.log("handleSuccessedRegister");
         console.log(game);
-        
-        this.setState(()=>({isInGameRoom:true, currGame : game}));        
+        this.enterGameRoom(game);
     }
 
     handleRegisterError() {
         console.error('register failed');
-        this.setState(()=>({isInGameRoom:false}));
+        this.props.exitGameRoom();
     }
 
-    setCurrGame(game){
-        this.setState(()=>({currGame : game})); 
-        this.props.setGameInBase(game); 
+    enterGameRoom(game){
+        this.props.enterGameRoom(game);
     }
 }
+
+gamePanelContainer.propTypes ={
+    exitGameRoom         : propTypes.func,
+    enterGameRoom        : propTypes.func,
+
+};

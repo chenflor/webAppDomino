@@ -25,7 +25,7 @@ export default class gamesArea extends React.Component {
         }
     }
 
-    render() {     
+    render() {
         return(
             <form className="games-area-wrpper">
             <h3>Games</h3>
@@ -35,7 +35,7 @@ export default class gamesArea extends React.Component {
                     <button onClick={() => (this.deleteGame(game))}>Delete</button>
                     </div>
                     <h5> 
-                        created by {game.userWhoCreated}, registered: {game.registeredPlayers}/{game.numOfPlayers} status: {(game.gameStarted) ? "STARTED" : "waiting"}
+                        created by {game.userWhoCreated}, registered: {game.registeredPlayersCounter}/{game.numOfPlayers} status: {(game.gameStarted) ? "STARTED" : "waiting"}
                     </h5>
                     <button className="btn" onClick={() => this.registerToGame(game)} disabled={this.state.sendInProgress}>register</button>
                 </div>))}
@@ -60,6 +60,7 @@ export default class gamesArea extends React.Component {
     }
 
     registerToGame(game){
+        console.log("HERE in register game");
         this.setState(()=>({sendInProgress: true}));
         fetch('/games/registerToGame', {
             method: 'POST',
@@ -70,6 +71,7 @@ export default class gamesArea extends React.Component {
             if (!response.ok) {
                 this.props.handleRegisterError();                
                 console.log("GGGGGGG");
+                console.log(response);
                 throw response;
             }
             console.log("HHHHHHHHHH");
@@ -78,7 +80,7 @@ export default class gamesArea extends React.Component {
         }).then(curGame => {
             console.log(curGame);
             this.props.handleSuccessedRegister(curGame);
-            this.props.setCurrGame(curGame);
+            this.props.enterGameRoom(curGame);
             this.setState(()=>({sendInProgress: false}));      
         }).catch(err => {throw err});
         return false; 
