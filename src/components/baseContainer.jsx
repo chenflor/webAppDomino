@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import LoginModal from './login-modal.jsx';
 import GamePanelContaier from './gamePanelContainer.jsx';
 import GameRoom from './gameRoom.jsx';
+import Logout from './logout.jsx';
+import UserInfo from './userInfo.jsx';
 
 export default class BaseContainer extends React.Component {
     constructor(args) {
@@ -35,17 +37,31 @@ export default class BaseContainer extends React.Component {
         }
         else if(this.state.isInGameRoom){
             console.log("In Game Room");
-            return (<GameRoom currGame = {this.state.currGame}/>);
+            return (
+            <React.Fragment>
+                <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
+                <GameRoom currGame = {this.state.currGame}/>
+            </React.Fragment>
+            );
         }
         return this.renderGamePanel();
+    }
+    
+
+    
+    initState(params) {
+        console.log("Init State");
+        this.setState(()=>({currentUser: {name:''}, showLogin: true, isInGameRoom : false,Game: {}}));
     }
 
     exitGameRoom(){
         this.setState({isInGameRoom : false, currGame :{}});        
-
     }
+
+
     handleSuccessedLogin() {
-        this.setState({showLogin:false, currentUser : {name :this.getUserName}});        
+        console.log("In successfull login");
+        this.setState({showLogin:false, currentUser : {name :this.getUserName()}});        
     }
 
     handleLoginError() {
@@ -58,6 +74,7 @@ export default class BaseContainer extends React.Component {
     }
 
     getUserName() {
+        console.log("HHHHH");
         this.fetchUserInfo()
         .then(userInfo => {
             this.setState(()=>({currentUser:userInfo, showLogin: false}));
@@ -82,12 +99,10 @@ export default class BaseContainer extends React.Component {
     }
 
     renderGamePanel() {
+        console.log(this.state.currentUser);
         return(
             <div className="chat-base-container">
-                <div className="user-info-area">
-                    Hello {this.state.currentUser.name}
-                    <button className="logout btn" onClick={this.logoutHandler} disabled={this.state.disableLogout}>Logout</button>
-                </div>
+                <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
                 <GamePanelContaier exitGameRoom = {this.exitGameRoom} enterGameRoom = {this.enterGameRoom}/>                
             </div>
         )
@@ -101,6 +116,7 @@ export default class BaseContainer extends React.Component {
             // this.setState(()=>({currentUser: {name:''}, showLogin: true}));
             // })
     logoutHandler() {
+        console.log("In logout Handler");
         fetch('/users/logout', {
             method: 'POST',
             body: this.state.currGame.gameName,
@@ -114,9 +130,10 @@ export default class BaseContainer extends React.Component {
                 throw response;
             }
             else{
-                this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+                this.initState();
             }
         });
         return false;      
     }
+
 }

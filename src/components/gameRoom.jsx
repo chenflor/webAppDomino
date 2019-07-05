@@ -54,7 +54,6 @@ export default class GameRoom extends React.Component {
     //         this.props.disableLogout(true);
     //     }
     // }
-
     quitHandler(){
         fetch('/users/quitGame', {
             method: 'POST',
