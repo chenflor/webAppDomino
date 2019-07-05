@@ -60,7 +60,6 @@ export default class gamesArea extends React.Component {
     }
 
     registerToGame(game){
-        console.log("HERE in register game");
         this.setState(()=>({sendInProgress: true}));
         fetch('/games/registerToGame', {
             method: 'POST',
@@ -70,11 +69,8 @@ export default class gamesArea extends React.Component {
         .then(response => {            
             if (!response.ok) {
                 this.props.handleRegisterError();                
-                console.log("GGGGGGG");
-                console.log(response);
                 throw response;
             }
-            console.log("HHHHHHHHHH");
             return response.json();
                     
         }).then(curGame => {
