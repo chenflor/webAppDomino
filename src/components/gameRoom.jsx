@@ -4,22 +4,55 @@ import GamePanelContaier from './gamePanelContainer.jsx';
 import DominoBoard from './GameBoard/src/dominoBoard/dominoBoard.jsx';
 import PropTypes from 'prop-types';
 
+//game {gameName, numOfPlayers, userWhoCreated,registeredUsersList registeredPlayersCounter, gameStarted}
+
+
 export default class GameRoom extends React.Component {
-    constructor(args) {
-        super(...args);
+    constructor(props) {
+        super(props);
         this.state = {
             playerQuit : false,
-            gameStarted : false
+            currGame : props.currGame
         };
         this.quitHandler= this.quitHandler.bind(this);
+        this.updateGameFromServer = this.updateGameFromServer.bind(this);
         // this.hasGameStarted = this.hasGameStarted.bind(this);
 
     }
 
     componentDidMount() {
-        this.setState({playerQuit : this.state.playerQuit, gameStarted : this.props.currGame.gameStarted})
+        console.log("componentDidMount");
+        this.updateGameFromServer();
+        //this.setState({playerQuit : this.state.playerQuit, gameStarted : this.props.currGame.gameStarted})
         // this.getGames();
     }
+    componentWillUnmount(){
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+        }
+    }
+
+    // updateGame(currGame){
+    //     this.setState({currGame : currGame});
+    // }
+    updateGameFromServer(){
+        console.log("updating Game From Server");
+        fetch('/games/getCurrentGame', {method:'Get', credentials: 'include'})
+        .then(response=> {            
+            if (response.ok){
+                console.log(response);
+                this.timeoutId = setTimeout(this.updateGameFromServer, 400);
+                return response.json();
+            } else {              
+                    throw response;
+                }      
+        }).then(currentGame =>{
+            this.setState({currGame : currentGame});
+            console.log(currentGame);
+            
+        }).catch(err => {throw err});
+    }
+    
 
     componentWillUnmount() {
         if (this.timeoutId) {
@@ -27,7 +60,7 @@ export default class GameRoom extends React.Component {
         }
     }
     
-    render() {  
+    render() {
         // this.hasGameStarted();
         if(this.state.playerQuit){
             return (
@@ -36,9 +69,7 @@ export default class GameRoom extends React.Component {
         }   
         else{
             let dominoBoard =(<h2>"Game has not started"</h2>);
-            console.log("this.props.currGame");
-            console.log(this.props.currGame);
-            if (this.state.gameStarted){
+            if (this.state.currGame.gameStarted){
                 dominoBoard = (<DominoBoard/>);
             }
             return (<div className="game-room-wrpper">

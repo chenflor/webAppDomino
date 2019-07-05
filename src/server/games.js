@@ -39,13 +39,22 @@ function findGame(name){
 }
 
 function findGameFromUserName(req,res,next){
-	for(auth.getUserInfo(req.session.id).name in gamesList){
-		if (game.registeredUsers.indexOf(name) >0){
-			return game;
+	console.log("findGameFromUserName")
+	let found = false;
+	let name = auth.getUserInfo(req.session.id).name;
+	console.log(gamesList);
+	for(var i =0; i< gamesList.length; i++){
+		if(gamesList[i].registeredUsersList.indexOf(name)>=0){
+			res.locals.currentGame = gamesList[i];
+			found = true;
+			break;
 		}
 	}
-
-	return null;
+	if(!found){
+		res.status(403).send("User is not in a game");
+		return;
+	}
+	next();
 }
 
 function registerToGame(req, res, next) {
