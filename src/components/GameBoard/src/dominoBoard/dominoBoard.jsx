@@ -200,10 +200,9 @@ class DominoBoard extends React.Component{
   }
 
   insertDominoToServerGameBoard(playerDominoToBeInserted){
-    this.setState(()=>({sendInProgress: true}));
     fetch('/gameBoards/insertDomino', {
         method: 'POST',
-        body: playerDominoToBeInserted,
+        body: JSON.stringify(playerDominoToBeInserted),
         credentials: 'include'
     })
     .then(response => { 
@@ -261,7 +260,6 @@ class DominoBoard extends React.Component{
         return response.json();
                 
     }).then(board => {
-        console.log(board); 
         that.setState({dominosBoard: board.dominosBoard, 
           potential :board.potential,
           validNumbers : board.validNumbers});
