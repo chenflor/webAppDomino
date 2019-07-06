@@ -26,6 +26,8 @@ class DominoBoard extends React.Component{
       validNumbers               : [0,1,2,3,4,5,6],
       players                    : {}
     };
+
+    this.getDominosBoard = this.getDominosBoard.bind(this);
   }
   
   makeEmptyBoard() {
@@ -197,6 +199,24 @@ class DominoBoard extends React.Component{
     });
   }
 
+  insertDominoToServerGameBoard(playerDominoToBeInserted){
+    this.setState(()=>({sendInProgress: true}));
+    fetch('/gameBoards/insertDomino', {
+        method: 'POST',
+        body: playerDominoToBeInserted,
+        credentials: 'include'
+    })
+    .then(response => { 
+        if (response.status === 403) {
+            response.text().then((data) => alert(data));
+        }           
+        else if (!response.ok) {             
+            throw response;
+        }
+        else{ this.getDominosBoard()}            
+    });
+  }
+
   insertDominoToGameBoard(playerDominoToBeInserted){
     if(this.canDominoBeInsertedToGameBoard(playerDominoToBeInserted)){
       let dominoCell = this.createDominoCellFromPlayerDomino(playerDominoToBeInserted);
@@ -232,6 +252,7 @@ class DominoBoard extends React.Component{
 
 
   getDominosBoard(){
+    const that = this;
     fetch('/gameBoards/getGameBoard', {method: 'GET', credentials: 'include'})
     .then(response => {            
         if (!response.ok) {               
@@ -241,13 +262,14 @@ class DominoBoard extends React.Component{
                 
     }).then(board => {
         console.log(board); 
-        this.setState(()=>({dominosBoard: board.dominosBoard, 
+        that.setState({dominosBoard: board.dominosBoard, 
           potential :board.potential,
-          validNumbers : board.validNumbers}));
+          validNumbers : board.validNumbers});
 
         this.timeoutId = setTimeout(this.getDominosBoard, 400);
-        return randomDomino; 
+        return board; 
     }).catch(err => {throw err});
+
   }
 
 
@@ -259,7 +281,7 @@ class DominoBoard extends React.Component{
         <PlayerBox 
         validNumbers = {this.state.validNumbers} 
         newGame ={this.newGame.bind(this)} 
-        insertDominoToGameBoard ={this.insertDominoToGameBoard.bind(this)}
+        insertDominoToGameBoard ={this.insertDominoToServerGameBoard.bind(this)}
         firstRound = {this.firstRound}
         calcPotentialDominos = {this.calcPotentialDominos.bind(this)}/> 
       </div>

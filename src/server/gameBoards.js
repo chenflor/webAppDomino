@@ -2,7 +2,7 @@
 var gamesData = new Map();
 
 const INITIAL_DOMINO_VALUES = {
-  isDisplayed  : true, //change later
+  isDisplayed  : false, 
   firstNum     : 1,
   secondNum    : 2,
   isHorizontal : false
@@ -33,7 +33,7 @@ function initBoard() {
 function newGame(gameName , playersList){
     console.log("new game in game boards" + gameName);
     var newGameBoardData = initBoardData;
-
+    newGameBoardData.gameName = gameName;
     newGameBoardData.playersList = playersList;
     newGameBoardData.potentialDominos = [];
     newGameBoardData.dominosBoard = initBoard();
@@ -48,9 +48,98 @@ function isDoubleDomino(domino){
     return false;
 };
 
+function createPotentialCell(number,pRow,pCol,row,col,isFirstNum,horizon){
+  return(
+    {
+      number       : number,
+      potentialRow : pRow,
+      potentialCol : pCol,
+      isFirstNum   : isFirstNum,
+      row          : row,
+      col          : col,
+      horizontal   : horizon
+    }
+  );
+}
+// _addToPotentialAroundDomino(domino,row,col){
+//   if(domino.isHorizontal){
+//     if((row-1) >= 0){
+//       this.potentialDominos.push(this.createPotentialCell(domino.firstNum,row-1,col,row,col,true,true));
+//     }
+//     if((row+1)<this.rows){
+//       this.potentialDominos.push(this.createPotentialCell(domino.secondNum,row+1,col,row,col,false,true));
+//     }
+//     if(this.isDoubleDomino(domino)){
+//       if((col-1) >= 0){
+//         this.potentialDominos.push(this.createPotentialCell(domino.firstNum,row,col-1,row,col,true,false));
+//       }
+//       if((col+1) < this.cols){
+//         this.potentialDominos.push(this.createPotentialCell(domino.secondNum,row,col+1,row,col,false,false));
+//       }
+      
+//     }
+//   }
+//   else{
+//     if((col-1) >= 0){
+//       this.potentialDominos.push(this.createPotentialCell(domino.firstNum,row,col-1,row,col,true,false));
+//     }
+//     if((col+1) < this.cols){
+//       this.potentialDominos.push(this.createPotentialCell(domino.secondNum,row,col+1,row,col,false,false));
+//     }
+//     if(this.isDoubleDomino(domino)){
+//       if((row-1) >= 0){
+//         this.potentialDominos.push(this.createPotentialCell(domino.firstNum,row-1,col,row,col,true,true));
+//       }
+//       if((row+1)<this.rows){
+//         this.potentialDominos.push(this.createPotentialCell(domino.secondNum,row+1,col,row,col,false,true));
+//       }
+//     }
+//   }
+// }
+
+// removeMarkedDominos(){
+//   for(var i =0; i<this.potentialDominos.length;i++){
+//     let potentialDomino = this.potentialDominos[i];
+//     if(this.state.dominosBoard[potentialDomino.row][potentialDomino.col].isPotential = true){
+//       this.state.dominosBoard[potentialDomino.row][potentialDomino.col].isPotential = false;
+//     }
+//   }
+//   this.setState({dominosBoard : this.state.dominosBoard});
+// }
+
+// updatePotentialDominoes(domino,row,col){
+//   this.removeMarkedDominos();
+//   if(this.potentialDominos.length == 0){
+//     this._addToPotentialAroundDomino(domino,row,col);
+    
+//   }
+//   else{
+//     let tmpArr =[];
+//     this._addToPotentialAroundDomino(domino,row,col);
+//     for(var i =0; i<this.potentialDominos.length;i++){
+//       let potentialDomino = this.potentialDominos[i];
+//       if(this.state.dominosBoard[potentialDomino.potentialRow][potentialDomino.potentialCol].isDisplayed == false){
+//         tmpArr.push(potentialDomino);
+//       }
+//     }
+//     this.potentialDominos = tmpArr;
+   
+//   }
+//   let validNumbers = [];
+//   this.potentialDominos.forEach(
+//     (potential)=>{if (validNumbers.indexOf(potential.number)==-1) validNumbers.push(potential.number)});
+//   this.setState({validNumbers:validNumbers});
+// }
+
+
+
+
+
+
+
 function whereDominoCanBeinserted(domino, gameName){
     let ans;
-    curGameData = gamesData.get(gameName);
+    let curGameData = gamesData.get(gameName);
     if(curGameData.firstRound){
       ans = {row : 7, col : 3};
     }
@@ -81,9 +170,11 @@ function whereDominoCanBeinserted(domino, gameName){
     
     return ans;
 };
+
 function canDominoBeInsertedToGameBoard(domino,gameName){
-    return this.whereDominoCanBeinserted(domino,gameName)!=undefined;
+  return whereDominoCanBeinserted(domino,gameName)!=undefined;
 };
+
 
 function createDominoCellFromPlayerDomino(playerDomino){
     return ({
@@ -96,20 +187,24 @@ function createDominoCellFromPlayerDomino(playerDomino){
   };
 
 function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
-    if(this.canDominoBeInsertedToGameBoard(playerDominoToBeInserted, gameName)){
-      let dominoCell = this.createDominoCellFromPlayerDomino(playerDominoToBeInserted);
-      let location = this.whereDominoCanBeinserted(dominoCell,gameName);
-      if(location){
-        gamesData.get(gameName).dominosBoard[location.row][location.col] = dominoCell;
-        this.updatePotentialDominoes(dominoCell,location.row,location.col);
-      }  
-    }
-    else{
-      console.warn("Tried to insert a cell that was already occupid");
-    }
-    if(this.firstRound){
-      this.firstRound = false;
-    }
+  console.log("In insertDominoToGameBoard" + playerDominoToBeInserted );
+  console.log("gameName " + gameName);
+  if(canDominoBeInsertedToGameBoard(playerDominoToBeInserted, gameName)){
+    let dominoCell = createDominoCellFromPlayerDomino(playerDominoToBeInserted);
+    let location = whereDominoCanBeinserted(dominoCell,gameName);
+    if(location){
+      gamesData.get(gameName).dominosBoard[location.row][location.col] = dominoCell;
+      gamesData.get(gameName).firstRound = false;
+      return true;
+      //updatePotentialDominoes(dominoCell,location.row,location.col);
+    }  
+  }
+  else{
+    console.warn("Tried to insert a cell that was already occupid");
+    return false;
+  }
+    
+  
     
 };
 
@@ -143,4 +238,4 @@ function getGameBoard(gameName){
     return ans;
 };
 
-module.exports = {getGameBoard, newGame};
+module.exports = {getGameBoard, newGame, insertDominoToGameBoard};
