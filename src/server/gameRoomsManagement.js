@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const gameRooms = require('./gameRooms');
+const auth = require('./auth');
 
 const gameRoomsManagement = express.Router();
 
@@ -11,5 +12,10 @@ const gameRoomsManagement = express.Router();
 // gameRoomsManagement.get('/allGames', (req, res) => {
 // 	res.json(games.getAllGames());
 // });
+
+
+gameRoomsManagement.get('/getARandomDomino',(req, res) => {		
+	res.json(gameRooms.getARandomDomino(auth.getUserInfo(req.session.id).name));	
+});
 
 module.exports = gameRoomsManagement;

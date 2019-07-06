@@ -36,7 +36,6 @@ export default class BaseContainer extends React.Component {
                 loginErrorHandler={this.handleLoginError}/>);
         }
         else if(this.state.isInGameRoom){
-            console.log("In Game Room");
             return (
             <React.Fragment>
                 <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
@@ -50,7 +49,7 @@ export default class BaseContainer extends React.Component {
 
     
     initState(params) {
-        console.log("Init State");
+        // console.log("Init State");
         this.setState(()=>({currentUser: {name:''}, showLogin: true, isInGameRoom : false,Game: {}}));
     }
 
@@ -60,7 +59,6 @@ export default class BaseContainer extends React.Component {
 
 
     handleSuccessedLogin() {
-        console.log("In successfull login");
         this.setState({showLogin:false, currentUser : {name :this.getUserName()}});        
     }
 
@@ -74,7 +72,6 @@ export default class BaseContainer extends React.Component {
     }
 
     getUserName() {
-        console.log("HHHHH");
         this.fetchUserInfo()
         .then(userInfo => {
             this.setState(()=>({currentUser:userInfo, showLogin: false}));
@@ -99,7 +96,7 @@ export default class BaseContainer extends React.Component {
     }
 
     renderGamePanel() {
-        console.log(this.state.currentUser);
+        // console.log(this.state.currentUser);
         return(
             <div className="chat-base-container">
                 <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
@@ -116,7 +113,6 @@ export default class BaseContainer extends React.Component {
             // this.setState(()=>({currentUser: {name:''}, showLogin: true}));
             // })
     logoutHandler() {
-        console.log("In logout Handler");
         fetch('/users/logout', {
             method: 'POST',
             body: this.state.currGame.gameName,

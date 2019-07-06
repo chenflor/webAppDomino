@@ -14,12 +14,10 @@ gamesManagement.get('/allGames', (req, res) => {
 });
 
 gamesManagement.get('/getCurrentGame',games.findGameFromUserName, (req, res) => {
-	console.log(" HERE!!!!");
 	res.json(res.locals.currentGame);
 });
 
 gamesManagement.post('/registerToGame', games.registerToGame,(req, res) => {
-	console.log(res.locals.currentGame);
 	res.json(res.locals.currentGame);
 });
 

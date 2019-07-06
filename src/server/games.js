@@ -39,10 +39,9 @@ function findGame(name){
 }
 
 function findGameFromUserName(req,res,next){
-	console.log("findGameFromUserName")
 	let found = false;
 	let name = auth.getUserInfo(req.session.id).name;
-	console.log(gamesList);
+	// console.log(gamesList);
 	for(var i =0; i< gamesList.length; i++){
 		if(gamesList[i].registeredUsersList.indexOf(name)>=0){
 			res.locals.currentGame = gamesList[i];
@@ -58,7 +57,6 @@ function findGameFromUserName(req,res,next){
 }
 
 function registerToGame(req, res, next) {
-	console.log("In register game");
 	let index = findGame(req.body);
 	if(index == -1){
 		res.status(403).send('game does not exist');
@@ -80,7 +78,7 @@ function registerToGame(req, res, next) {
 		gameRooms.addPlayerToGameRoom(i,userName);
 		if(gamesList[index].registeredPlayersCounter == gamesList[index].numOfPlayers){
 			gamesList[index].gameStarted = true;
-			gameRooms.startGame();
+			gameRooms.startGame(i);
 		}
 	}
 	res.locals.currentGame = gamesList[index];

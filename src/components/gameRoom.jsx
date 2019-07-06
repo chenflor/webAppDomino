@@ -21,7 +21,7 @@ export default class GameRoom extends React.Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount");
+        // console.log("componentDidMount");
         this.updateGameFromServer();
         //this.setState({playerQuit : this.state.playerQuit, gameStarted : this.props.currGame.gameStarted})
         // this.getGames();
@@ -36,11 +36,11 @@ export default class GameRoom extends React.Component {
     //     this.setState({currGame : currGame});
     // }
     updateGameFromServer(){
-        console.log("updating Game From Server");
+        // console.log("updating Game From Server");
         fetch('/games/getCurrentGame', {method:'Get', credentials: 'include'})
         .then(response=> {            
             if (response.ok){
-                console.log(response);
+                // console.log(response);
                 this.timeoutId = setTimeout(this.updateGameFromServer, 400);
                 return response.json();
             } else {              
@@ -48,7 +48,7 @@ export default class GameRoom extends React.Component {
                 }      
         }).then(currentGame =>{
             this.setState({currGame : currentGame});
-            console.log(currentGame);
+            // console.log(currentGame);
             
         }).catch(err => {throw err});
     }
@@ -80,11 +80,6 @@ export default class GameRoom extends React.Component {
         
     }
 
-    // hasGameStarted(){
-    //     if(this.props.currGame.gameStarted){
-    //         this.props.disableLogout(true);
-    //     }
-    // }
     quitHandler(){
         fetch('/users/quitGame', {
             method: 'POST',

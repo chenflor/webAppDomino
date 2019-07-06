@@ -1,5 +1,6 @@
 // const auth = require('./auth');
-//gameRooms {game, listOfPlayers}
+const length = 28;
+//gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
 
 function getGameRoom(index){
@@ -8,6 +9,17 @@ function getGameRoom(index){
 
 function addPlayerToGameRoom(index, player){
     gameRooms[index].listOfPlayers.push(player);
+}
+
+function findGameByPlayer(name){
+    for(let i=0; i<gameRooms.length;i++){
+        for(let j=0; j<gameRooms[i].listOfPlayers.length;j++){
+		    if((new String(gameRooms[i].listOfPlayers[j]).trim().valueOf()) == (new String(name).trim().valueOf())){
+			    return i;
+		    }
+        }
+    }
+	return -1; 
 }
 
 function findRoom(name){
@@ -54,12 +66,56 @@ function removePlayerFromRoom(index){
     gameRooms[index].listOfPlayers.splice(playerI,1);
 }
 
-function startGame(){
-
+function initDominoCashArray(){
+    //Initializing a 28 pieces domino array.
+    let ansArray =[];
+    let index = 0;
+    for(var i=0; i<=6;i++){
+      for(var j = i;j<=6;j++){
+        ansArray[index] = {firstNum : i, secondNum : j};
+        index++;
+        if(index > length){
+          console.error("There is a bug in the code - too many pieces are initialized");
+          return null;
+        }
+      }
+    }
+    return ansArray;
 }
 
+function getARandomDomino(name){
+    if(length<1){
+      console.info("No Domino pieces left in Cash, returning null");
+      return null;
+    }
+    console.log(name);
+    let indexOfGame = findGameByPlayer(name);
+    console.log(indexOfGame);
+    var max = length-1;
+    var min = 0;
+    var index = Math.floor(Math.random()*(max-min+1)+min);
+    var ans = gameRooms[indexOfGame].cashOfDominos[index];
+    var tempArray = [];
+    var j = 0;
+    for(var i = 0; i<this.length-1; i++){
+        if(j == index){
+            j = j+1;
+        }
+        tempArray[i] = gameRooms[indexOfGame].cashOfDominos[j];
+        j = j+1;
+    }
+    gameRooms[indexOfGame].cashOfDominos = tempArray;
+    this.length = this.length - 1;
+    //res.locals.randomDomino = ans;
+    //next();
+    return ans;
+  }
+
+function startGame(index){
+    gameRooms[index].cashOfDominos = initDominoCashArray();
+}
 function deleteGameRoom(){
     
 }
 
-module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, quitGame, deleteGameRoom, findRoom, getGameRoom, removePlayerFromRoom}
+module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, quitGame, deleteGameRoom, findRoom, getGameRoom, removePlayerFromRoom, getARandomDomino}
