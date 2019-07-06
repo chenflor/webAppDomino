@@ -39,7 +39,12 @@ class DominoBoard extends React.Component{
     return board;
   }
   componentDidMount(){
-    
+    this.getDominosBoard();
+  }
+  componentWillUnmount(){
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
   }
   
   whereDominoCanBeinserted(domino){
@@ -221,6 +226,28 @@ class DominoBoard extends React.Component{
       } 
     }
     this.setState({dominosBoard : this.state.dominosBoard});
+  }
+
+
+
+
+  getDominosBoard(){
+    fetch('/gameBoards/getGameBoard', {method: 'GET', credentials: 'include'})
+    .then(response => {            
+        if (!response.ok) {               
+            throw response;
+        }
+        return response.json();
+                
+    }).then(board => {
+        console.log(board); 
+        this.setState(()=>({dominosBoard: board.dominosBoard, 
+          potential :board.potential,
+          validNumbers : board.validNumbers}));
+
+        this.timeoutId = setTimeout(this.getDominosBoard, 400);
+        return randomDomino; 
+    }).catch(err => {throw err});
   }
 
 
