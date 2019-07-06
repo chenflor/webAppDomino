@@ -19,7 +19,6 @@ gameBoardsManagement.get('/getGameBoard',(req, res) => {
 
 gameBoardsManagement.post('/insertDomino',(req, res) => {
     let gameName = gameRooms.findGameNameByPlayer(auth.getUserInfo(req.session.id).name);
-    console.log(req.body);
     if(gameName){
        if(gameBoards.insertDominoToGameBoard(JSON.parse(req.body), gameName)){
             res.sendStatus(200);

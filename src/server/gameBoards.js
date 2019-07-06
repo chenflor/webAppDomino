@@ -184,8 +184,6 @@ function createDominoCellFromPlayerDomino(playerDomino){
 
 function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
   console.log("In insertDominoToGameBoard" + playerDominoToBeInserted );
-  console.log("gameName " + gameName);
-  console.log(playerDominoToBeInserted);
   let insertSucsessfully = false;
   if(canDominoBeInsertedToGameBoard(playerDominoToBeInserted, gameName)){
     let dominoCell = createDominoCellFromPlayerDomino(playerDominoToBeInserted);
