@@ -11,7 +11,6 @@ export default class GameRoom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playerQuit : false,
             currGame : props.currGame
         };
         this.quitHandler= this.quitHandler.bind(this);
@@ -23,7 +22,7 @@ export default class GameRoom extends React.Component {
     componentDidMount() {
         // console.log("componentDidMount");
         this.updateGameFromServer();
-        //this.setState({playerQuit : this.state.playerQuit, gameStarted : this.props.currGame.gameStarted})
+        //this.setState({gameStarted : this.props.currGame.gameStarted})
         // this.getGames();
     }
     componentWillUnmount(){
@@ -87,8 +86,6 @@ export default class GameRoom extends React.Component {
                 throw response;
             }
             else{
-                that.setState(()=>({playerQuit:true}));
-
                 that.props.exitGameRoom();
             }
         });
