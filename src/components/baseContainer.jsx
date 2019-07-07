@@ -39,7 +39,7 @@ export default class BaseContainer extends React.Component {
             return (
             <React.Fragment>
                 <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
-                <GameRoom currGame = {this.state.currGame}/>
+                <GameRoom currGame = {this.state.currGame} exitGameRoom = {this.exitGameRoom}/>
             </React.Fragment>
             );
         }

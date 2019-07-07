@@ -62,25 +62,18 @@ export default class GameRoom extends React.Component {
     
     render() {
         // this.hasGameStarted();
-        if(this.state.playerQuit){
-            return (
-                <GamePanelContaier/>   
-            );
-        }   
-        else{
-            let dominoBoard =(<h2>"Game has not started"</h2>);
-            if (this.state.currGame.gameStarted){
-                dominoBoard = (<DominoBoard/>);
-            }
-            return (<div className="game-room-wrpper">
-            <button className="logout btn" onClick={this.quitHandler}>quit</button>
-            <React.Fragment>{dominoBoard}</React.Fragment>
-            </div>);
-        }   
-        
+        let dominoBoard =(<h2>"Game has not started"</h2>);
+        if (this.state.currGame.gameStarted){
+            dominoBoard = (<DominoBoard/>);
+        }
+        return (<div className="game-room-wrpper">
+        <button className="logout btn" onClick={this.quitHandler}>quit</button>
+        <React.Fragment>{dominoBoard}</React.Fragment>
+        </div>);
     }
 
     quitHandler(){
+        const that = this;
         fetch('/users/quitGame', {
             method: 'POST',
             body: this.props.currGame.gameName,
@@ -94,7 +87,9 @@ export default class GameRoom extends React.Component {
                 throw response;
             }
             else{
-                this.setState(()=>({playerQuit:true}));
+                that.setState(()=>({playerQuit:true}));
+
+                that.props.exitGameRoom();
             }
         });
         return false; 
