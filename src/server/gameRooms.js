@@ -25,7 +25,6 @@ function findGameByPlayer(name){
 }
 
 function findGameNameByPlayer(name){
-    console.log(name);
     return gameRooms[findGameByPlayer(name)].game.gameName;
 }
 
