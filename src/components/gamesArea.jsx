@@ -26,8 +26,6 @@ export default class gamesArea extends React.Component {
     }
 
     render() {
-        console.log("In gamesArea"); 
-        console.log(this.state.games);       
         return(
             <form className="games-area-wrpper">
             <h3>Games</h3>
@@ -37,7 +35,7 @@ export default class gamesArea extends React.Component {
                     <button onClick={() => (this.deleteGame(game))}>Delete</button>
                     </div>
                     <h5> 
-                        created by {game.userWhoCreated}, registered: {game.registeredPlayers}/{game.numOfPlayers} status: {(game.gameStarted) ? "STARTED" : "waiting"}
+                        created by {game.userWhoCreated}, registered: {game.registeredPlayersCounter}/{game.numOfPlayers} status: {(game.gameStarted) ? "STARTED" : "waiting"}
                     </h5>
                     <button className="btn" onClick={() => this.registerToGame(game)} disabled={this.state.sendInProgress}>register</button>
                 </div>))}
@@ -62,11 +60,9 @@ export default class gamesArea extends React.Component {
     }
 
     registerToGame(game){
-        // e.preventDefault();
         this.setState(()=>({sendInProgress: true}));
         fetch('/games/registerToGame', {
             method: 'POST',
-            // body: this.thisName.innerHTML,
             body: game.gameName,
             credentials: 'include'
         })
@@ -75,10 +71,14 @@ export default class gamesArea extends React.Component {
                 this.props.handleRegisterError();                
                 throw response;
             }
-            this.props.handleSuccessedRegister();
-            this.props.setCurrGame(game);
-            this.setState(()=>({sendInProgress: false}));              
-        });
+            return response.json();
+                    
+        }).then(curGame => {
+            console.log(curGame);
+            this.props.handleSuccessedRegister(curGame);
+            this.props.enterGameRoom(curGame);
+            this.setState(()=>({sendInProgress: false}));      
+        }).catch(err => {throw err});
         return false; 
     }
 
@@ -91,7 +91,6 @@ export default class gamesArea extends React.Component {
         })
         .then(response => { 
             if (response.status === 403) {
-                // console.log(response.body);
                 response.text().then((data) => alert(data));
             }           
             else if (!response.ok) {             

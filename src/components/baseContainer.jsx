@@ -2,13 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LoginModal from './login-modal.jsx';
 import GamePanelContaier from './gamePanelContainer.jsx';
+import GameRoom from './gameRoom.jsx';
+import Logout from './logout.jsx';
+import UserInfo from './userInfo.jsx';
 
 export default class BaseContainer extends React.Component {
     constructor(args) {
         super(...args);
         this.state = {
             showLogin: true,
-            disLogout : false,
+            isInGameRoom: false,
+            // disLogout : false,
+            currGame: {},
             currentUser: {
                 name: ''
             }
@@ -18,21 +23,43 @@ export default class BaseContainer extends React.Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler= this.logoutHandler.bind(this);
-        this.disableLogout = this.disableLogout.bind(this);
+        this.exitGameRoom = this.exitGameRoom.bind(this);
+        this.enterGameRoom = this.enterGameRoom.bind(this);
 
         this.getUserName();
     }
     
     render() {        
         if (this.state.showLogin) {
-            return (<LoginModal loginSuccessHandler={this.handleSuccessedLogin} loginErrorHandler={this.handleLoginError}/>)
+            return (<LoginModal 
+                loginSuccessHandler={this.handleSuccessedLogin} 
+                loginErrorHandler={this.handleLoginError}/>);
+        }
+        else if(this.state.isInGameRoom){
+            return (
+            <React.Fragment>
+                <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
+                <GameRoom currGame = {this.state.currGame} exitGameRoom = {this.exitGameRoom}/>
+            </React.Fragment>
+            );
         }
         return this.renderGamePanel();
+    }
+    
+
+    
+    initState(params) {
+        // console.log("Init State");
+        this.setState(()=>({currentUser: {name:''}, showLogin: true, isInGameRoom : false,Game: {}}));
+    }
+
+    exitGameRoom(){
+        this.setState({isInGameRoom : false, currGame :{}});        
     }
 
 
     handleSuccessedLogin() {
-        this.setState(()=>({showLogin:false}), this.getUserName);        
+        this.setState({showLogin:false, currentUser : {name :this.getUserName()}});        
     }
 
     handleLoginError() {
@@ -40,8 +67,8 @@ export default class BaseContainer extends React.Component {
         this.setState(()=>({showLogin:true}));
     }
 
-    disableLogout(flag){
-        this.setState(()=>({disLogout:flag}));
+    enterGameRoom(newGame){
+        this.setState(()=>({currGame:newGame,isInGameRoom : true}));
     }
 
     getUserName() {
@@ -69,25 +96,40 @@ export default class BaseContainer extends React.Component {
     }
 
     renderGamePanel() {
+        // console.log(this.state.currentUser);
         return(
             <div className="chat-base-container">
-                <div className="user-info-area">
-                    Hello {this.state.currentUser.name}
-                    <button className="logout btn" onClick={this.logoutHandler} disabled={this.state.disableLogout}>Logout</button>
-                </div>
-                <GamePanelContaier disableLogout = {this.state.disableLogout}/>                
+                <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
+                <GamePanelContaier exitGameRoom = {this.exitGameRoom} enterGameRoom = {this.enterGameRoom}/>                
             </div>
         )
     }
 
+    // fetch('/users/logout', {method: 'GET', credentials: 'include'})
+            // .then(response => {
+            //     if (!response.ok) {
+            //         console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
+            //     }
+            // this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+            // })
     logoutHandler() {
-        console.log("In logout handler");
-        fetch('/users/logout', {method: 'GET', credentials: 'include'})
-        .then(response => {
-            if (!response.ok) {
-                console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
-            }
-            this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+        fetch('/users/logout', {
+            method: 'POST',
+            body: this.state.currGame.gameName,
+            credentials: 'include'
         })
+        .then(response => { 
+            if (response.status === 403) {
+                response.text().then((data) => alert(data));
+            }           
+            else if (!response.ok) {             
+                throw response;
+            }
+            else{
+                this.initState();
+            }
+        });
+        return false;      
     }
+
 }

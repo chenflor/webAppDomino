@@ -9,7 +9,7 @@
     "start": "node --inspect ./src/server.js",
     "start-watch": "nodemon --inspect ./src/server.js localhost 3000"
   },
-  "author": "Spivak Ofer",
+  "author": "Daniel Keinan & Chen Florescu",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",

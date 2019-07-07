@@ -1,6 +1,6 @@
 const auth = require('./auth');
 const gameRooms = require('./gameRooms');
-//game {gameName, numOfPlayers, userWhoCreated, registeredPlayers, gameStarted}
+//game {gameName, numOfPlayers, userWhoCreated,registeredUsersList registeredPlayersCounter, gameStarted}
 const gamesList = [];
 
 function addGameToGamesList(req, res, next) {	
@@ -17,11 +17,12 @@ function addGameToGamesList(req, res, next) {
 			}
 		}
 		newGame = {
-			gameName:          splitedBody[0], 
-			numOfPlayers:      splitedBody[1], 
-			userWhoCreated:    auth.getUserInfo(req.session.id).name, 
-			registeredPlayers: 0, 
-			gameStarted:       false
+			gameName				: splitedBody[0], 
+			numOfPlayers			: splitedBody[1], 
+			userWhoCreated			: auth.getUserInfo(req.session.id).name,
+			registeredUsersList 	: [], 
+			registeredPlayersCounter: 0, 
+			gameStarted				: false
 		};
 		gamesList.push(newGame);
 		next();
@@ -37,6 +38,24 @@ function findGame(name){
 	return -1;
 }
 
+function findGameFromUserName(req,res,next){
+	let found = false;
+	let name = auth.getUserInfo(req.session.id).name;
+	// console.log(gamesList);
+	for(var i =0; i< gamesList.length; i++){
+		if(gamesList[i].registeredUsersList.indexOf(name)>=0){
+			res.locals.currentGame = gamesList[i];
+			found = true;
+			break;
+		}
+	}
+	if(!found){
+		res.status(403).send("User is not in a game");
+		return;
+	}
+	next();
+}
+
 function registerToGame(req, res, next) {
 	let index = findGame(req.body);
 	if(index == -1){
@@ -47,23 +66,22 @@ function registerToGame(req, res, next) {
 		res.status(403).send('game already started');
 		return;
 	}
-	else if(gamesList[index].registeredPlayers >= gamesList[index].numOfPlayers){
+	else if(gamesList[index].registeredPlayersCounter >= gamesList[index].numOfPlayers){
 		res.status(403).send('Max number of players in game');
 		return;
 	}
 	else{
-		gamesList[index].registeredPlayers = gamesList[index].registeredPlayers + 1;
+		let userName = auth.getUserInfo(req.session.id).name;
+		gamesList[index].registeredPlayersCounter++;
+		gamesList[index].registeredUsersList.push(userName);
 		let i = gameRooms.findOrCreateGameRoom(gamesList[index]);
-		gameRooms.addPlayerToGameRoom(i,auth.getUserInfo(req.session.id).name)
-		console.log(gamesList[index].registeredPlayers);
-		console.log(gamesList[index].numOfPlayers);
-
-		if(gamesList[index].registeredPlayers == gamesList[index].numOfPlayers){
-			console.log("Here");
+		gameRooms.addPlayerToGameRoom(i,userName);
+		if(gamesList[index].registeredPlayersCounter == gamesList[index].numOfPlayers){
 			gamesList[index].gameStarted = true;
-			gameRooms.startGame();
+			gameRooms.startGame(i);
 		}
 	}
+	res.locals.currentGame = gamesList[index];
 	next();
 }
 
@@ -77,7 +95,7 @@ function deleteGame(req, res, next) {
 		res.status(403).send('user did not create this game');
 		return;
 	}
-	else if(gamesList[index].gameStarted || gamesList[index].registeredPlayers > 0){
+	else if(gamesList[index].gameStarted || gamesList[index].registeredPlayersCounter > 0){
 		res.status(403).send('Can not delete game, game has started or has registered players');
 		return;
 	}
@@ -93,4 +111,4 @@ function getAllGames(){
 	return gamesList;
 }
 
-module.exports = {addGameToGamesList, getAllGames, registerToGame, deleteGame}
+module.exports = {addGameToGamesList, getAllGames, registerToGame, deleteGame, findGameFromUserName}

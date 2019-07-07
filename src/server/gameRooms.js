@@ -1,9 +1,31 @@
-const games = require('./games');
-//gameRooms {game, listOfPlayers}
+// const auth = require('./auth');
+
+const gameBoards = require('./gameBoards');
+const initialCashSize = 28;
+//gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
+
+function getGameRoom(index){
+    return gameRooms[index];
+}
 
 function addPlayerToGameRoom(index, player){
     gameRooms[index].listOfPlayers.push(player);
+}
+
+function findGameIndexByPlayer(name){
+    for(let i=0; i<gameRooms.length;i++){
+        for(let j=0; j<gameRooms[i].listOfPlayers.length;j++){
+		    if((new String(gameRooms[i].listOfPlayers[j]).trim().valueOf()) == (new String(name).trim().valueOf())){
+			    return i;
+		    }
+        }
+    }
+	return -1; 
+}
+
+function findGameNameByPlayer(name){
+    return gameRooms[findGameIndexByPlayer(name)].game.gameName;
 }
 
 function findRoom(name){
@@ -24,31 +46,90 @@ function findOrCreateGameRoom(thisGame){
         };
         newIndex = gameRooms.push(gameRoom)-1;
     }
-    // console.log(gameRooms);
     return newIndex;
 }
 
-function quitGame(req, res, next){
-    let index = findRoom(req.body);
-    if(gameRooms[index].game.gameStarted === true){
-        res.status(403).send('you can not quit the game now');
-        return;
+function quitGame(playerName,gameName){
+    let index = findRoom(gameName);
+    if(index !== -1){
+        if(gameRooms[index].game.gameStarted === true){
+            return false;
+        }
+        else{
+            gameRooms[index].game.registeredPlayersCounter--;
+            let playerI = gameRooms[index].listOfPlayers.find((name) =>{
+                return (name === playerName)});
+            gameRooms[index].listOfPlayers.splice(playerI,1);
+            return true;
+        }
     }
-    else{
-        gameRooms[index].game.registeredPlayers = gameRooms[index].game.registeredPlayers-1;
-        let playerI = gameRooms[index].listOfPlayers.find((name) =>{return (name === gameRooms[index].game.gameName)});
-        gameRooms[index].listOfPlayers.splice(playerI,1);
-        // console.log(gameRooms);
-    }
-    next();
+    return true;
 }
 
-function startGame(){
-
+function removePlayerFromRoom(index){
+    gameRooms[index].game.registeredPlayersCounter--;
+    let playerI = gameRooms[index].listOfPlayers.find((name) =>{return (name === gameRooms[index].game.gameName)});
+    gameRooms[index].listOfPlayers.splice(playerI,1);
 }
 
+function initDominoCashArray(){
+    //Initializing a 28 pieces domino array.
+    let ansArray =[];
+    let index = 0;
+    for(var i=0; i<=6;i++){
+      for(var j = i;j<=6;j++){
+        ansArray[index] = {firstNum : i, secondNum : j};
+        index++;
+        if(index > initialCashSize){
+          console.error("There is a bug in the code - too many pieces are initialized");
+          return null;
+        }
+      }
+    }
+    if(index < initialCashSize){
+        console.error("There is a bug in the code - too little pieces are initialized");
+        return null;
+    }
+    return ansArray;
+}
+
+function getARandomDomino(playerName){
+    var indexOfGame = findGameIndexByPlayer(playerName);
+    let curGameCash = gameRooms[indexOfGame].cashOfDominos;
+    if(curGameCash.length<1){
+      console.info("No Domino pieces left in Cash, returning null");
+      return null;
+    }
+    console.log(playerName);
+    
+    console.log(indexOfGame);
+    let max = curGameCash.length-1;
+    let min = 0;
+    let index = Math.floor(Math.random()*(max-min+1)+min);
+    let ans = gameRooms[indexOfGame].cashOfDominos[index];
+    let tempArray = [];
+    let j = 0;
+    for(var i = 0; i<curGameCash.length-1; i++){
+        if(j == index){
+            j = j+1;
+        }
+        tempArray[i] = gameRooms[indexOfGame].cashOfDominos[j];
+        j = j+1;
+    }
+    gameRooms[indexOfGame].cashOfDominos = tempArray;
+
+    return ans;
+  }
+
+function startGame(index){
+    gameRooms[index].cashOfDominos = initDominoCashArray();
+    gameBoards.newGame(gameRooms[index].game.gameName, gameRooms[index].game.listOfPlayers);
+}
 function deleteGameRoom(){
     
 }
 
-module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, quitGame, deleteGameRoom}
+module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, 
+                  quitGame, deleteGameRoom, findRoom,
+                  getGameRoom, removePlayerFromRoom, getARandomDomino,
+                  findGameNameByPlayer}

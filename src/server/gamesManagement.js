@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const games = require('./games');
+const auth = require('./auth');
 
 const gamesManagement = express.Router();
 
@@ -12,8 +13,12 @@ gamesManagement.get('/allGames', (req, res) => {
 	res.json(games.getAllGames());
 });
 
+gamesManagement.get('/getCurrentGame',games.findGameFromUserName, (req, res) => {
+	res.json(res.locals.currentGame);
+});
+
 gamesManagement.post('/registerToGame', games.registerToGame,(req, res) => {
-	res.sendStatus(200);
+	res.json(res.locals.currentGame);
 });
 
 gamesManagement.post('/deleteGame', games.deleteGame,(req, res) => {
