@@ -1,7 +1,7 @@
 // const auth = require('./auth');
 
 const gameBoards = require('./gameBoards');
-const length = 28;
+const CASH_SIZE = 28;
 //gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
 
@@ -13,7 +13,7 @@ function addPlayerToGameRoom(index, player){
     gameRooms[index].listOfPlayers.push(player);
 }
 
-function findGameByPlayer(name){
+function findGameIndexByPlayer(name){
     for(let i=0; i<gameRooms.length;i++){
         for(let j=0; j<gameRooms[i].listOfPlayers.length;j++){
 		    if((new String(gameRooms[i].listOfPlayers[j]).trim().valueOf()) == (new String(name).trim().valueOf())){
@@ -25,7 +25,7 @@ function findGameByPlayer(name){
 }
 
 function findGameNameByPlayer(name){
-    return gameRooms[findGameByPlayer(name)].game.gameName;
+    return gameRooms[findGameIndexByPlayer(name)].game.gameName;
 }
 
 function findRoom(name){
@@ -80,30 +80,36 @@ function initDominoCashArray(){
       for(var j = i;j<=6;j++){
         ansArray[index] = {firstNum : i, secondNum : j};
         index++;
-        if(index > length){
+        if(index > CASH_SIZE){
           console.error("There is a bug in the code - too many pieces are initialized");
           return null;
         }
       }
     }
+    if(index < CASH_SIZE){
+        console.error("There is a bug in the code - too many pieces are initialized");
+        return null;
+      }
     return ansArray;
 }
 
-function getARandomDomino(name){
-    if(length<1){
+function getARandomDomino(playerName){
+    var indexOfGame = findGameIndexByPlayer(playerName);
+    let curGameCash = gameRooms[indexOfGame].cashOfDominos;
+    if(curGameCash.length<1){
       console.info("No Domino pieces left in Cash, returning null");
       return null;
     }
-    console.log(name);
-    let indexOfGame = findGameByPlayer(name);
+    console.log(playerName);
+    
     console.log(indexOfGame);
-    var max = length-1;
-    var min = 0;
-    var index = Math.floor(Math.random()*(max-min+1)+min);
-    var ans = gameRooms[indexOfGame].cashOfDominos[index];
-    var tempArray = [];
-    var j = 0;
-    for(var i = 0; i<this.length-1; i++){
+    let max = curGameCash.length-1;
+    let min = 0;
+    let index = Math.floor(Math.random()*(max-min+1)+min);
+    let ans = gameRooms[indexOfGame].cashOfDominos[index];
+    let tempArray = [];
+    let j = 0;
+    for(var i = 0; i<curGameCash.length-1; i++){
         if(j == index){
             j = j+1;
         }
@@ -111,9 +117,7 @@ function getARandomDomino(name){
         j = j+1;
     }
     gameRooms[indexOfGame].cashOfDominos = tempArray;
-    this.length = this.length - 1;
-    //res.locals.randomDomino = ans;
-    //next();
+
     return ans;
   }
 

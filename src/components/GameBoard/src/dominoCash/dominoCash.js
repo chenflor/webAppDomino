@@ -19,20 +19,22 @@ class DominoCash extends Component {
     }
 
     getARandomDomino(){
-      this.setState(()=>({sendInProgress: true}));
-        fetch('/gameRooms/getARandomDomino', {method: 'GET', credentials: 'include'})
-        .then(response => {            
-            if (!response.ok) {               
-                throw response;
-            }
-            return response.json();
-                    
-        }).then(randomDomino => {
-            console.log(randomDomino); 
-            this.setState(()=>({sendInProgress: false}));
-            return randomDomino; 
-        }).catch(err => {throw err});
-        // return false; 
+      this.setState({sendInProgress: true});
+      const that = this;
+      fetch('/gameRooms/getARandomDomino', {method: 'GET', credentials: 'include'})
+          .then(response => {            
+              if (!response.ok) {               
+                  throw response;
+              }
+              return response.json();
+                      
+          }).then(randomDomino => {
+              console.log(randomDomino); 
+              that.setState({sendInProgress: false});
+              that.props.getNewDominoFromCash(randomDomino);
+              return randomDomino; 
+          }).catch(err => {throw err});
+        
     }
 
     newGame(){
@@ -51,9 +53,7 @@ class DominoCash extends Component {
     getNewDominoFromCash(){
       this.numOfTimesPlayerTookFromCash = this.numOfTimesPlayerTookFromCash + 1;
       //need to add async await
-      var newDomino = this.getARandomDomino();
-      console.log(newDomino);
-      this.props.getNewDominoFromCash(newDomino);
+      this.getARandomDomino();
     }
 
     render() {
