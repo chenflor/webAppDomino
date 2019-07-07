@@ -1,7 +1,7 @@
 // const auth = require('./auth');
 
 const gameBoards = require('./gameBoards');
-const CASH_SIZE = 28;
+const initialCashSize = 28;
 //gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
 
@@ -80,16 +80,16 @@ function initDominoCashArray(){
       for(var j = i;j<=6;j++){
         ansArray[index] = {firstNum : i, secondNum : j};
         index++;
-        if(index > CASH_SIZE){
+        if(index > initialCashSize){
           console.error("There is a bug in the code - too many pieces are initialized");
           return null;
         }
       }
     }
-    if(index < CASH_SIZE){
-        console.error("There is a bug in the code - too many pieces are initialized");
+    if(index < initialCashSize){
+        console.error("There is a bug in the code - too little pieces are initialized");
         return null;
-      }
+    }
     return ansArray;
 }
 
