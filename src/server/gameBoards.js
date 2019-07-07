@@ -47,7 +47,7 @@ function isDoubleDomino(domino){
     return false;
 };
 
-function createPotentialCell(number,pRow,pCol,row,col,isFirstNum,horizon){
+function createPotentialCell(number,pRow,pCol,row,col,isFirstNum,isHorizontal){
   return(
     {
       number       : number,
@@ -56,42 +56,43 @@ function createPotentialCell(number,pRow,pCol,row,col,isFirstNum,horizon){
       isFirstNum   : isFirstNum,
       row          : row,
       col          : col,
-      horizontal   : horizon
+      horizontal   : isHorizontal
     }
   );
 }
+function isLocationEmptyInGameBorad(gameName,row, col){
+  return (gamesData.get(gameName).dominosBoard[row][col].isDisplayed == false);
+}
+function inBoundsOFMatrix(x_loc,y_loc,max_x_loc,max_y_loc){
+  if(x_loc <0 || x_loc > max_x_loc){
+    return false;
+  }
+  if(y_loc < 0 || y_loc > max_y_loc){
+    return false;
+  }
+  return true;
+}
+function _insertToPotentialDominos(gameName,dominoNum,row,col,isFirstNum,isHorizontal){
+  let potentialDominos = gamesData.get(gameName).potentialDominos; 
+  if(inBoundsOFMatrix(row,col,rows,cols) && isLocationEmptyInGameBorad(gameName,row,col)){
+    potentialDominos.push(createPotentialCell(dominoNum,row,col,row,col,isFirstNum,isHorizontal));
+  }
+}
 function _addToPotentialAroundDomino(gameName,domino,row,col){
-  let potentialDominos = gamesData.get(gameName).potentialDominos;
   if(domino.isHorizontal){
-    if((row-1) >= 0){
-      potentialDominos.push(createPotentialCell(domino.firstNum,row-1,col,row,col,true,true));
-    }
-    if((row+1)<rows){
-      potentialDominos.push(createPotentialCell(domino.secondNum,row+1,col,row,col,false,true));
-    }
+    _insertToPotentialDominos(gameName,domino.firstNum,row-1,col,true,true);
+    _insertToPotentialDominos(gameName,domino.secondNum,row+1,col,false,true);
     if(isDoubleDomino(domino)){
-      if((col-1) >= 0){
-        potentialDominos.push(createPotentialCell(domino.firstNum,row,col-1,row,col,true,false));
-      }
-      if((col+1) < cols){
-        potentialDominos.push(createPotentialCell(domino.secondNum,row,col+1,row,col,false,false));
-      }
+      _insertToPotentialDominos(gameName,domino.firstNum,row,col-1,true,false);
+      _insertToPotentialDominos(gameName,domino.secondNum,row,col+1,false,false);
     }
   }
   else{
-    if((col-1) >= 0){
-      potentialDominos.push(createPotentialCell(domino.firstNum,row,col-1,row,col,true,false));
-    }
-    if((col+1) < cols){
-      potentialDominos.push(createPotentialCell(domino.secondNum,row,col+1,row,col,false,false));
-    }
+    _insertToPotentialDominos(gameName,domino.firstNum,row,col-1,true,false);
+    _insertToPotentialDominos(gameName,domino.secondNum,row,col+1,false,false);
     if(isDoubleDomino(domino)){
-      if((row-1) >= 0){
-        potentialDominos.push(createPotentialCell(domino.firstNum,row-1,col,row,col,true,true));
-      }
-      if((row+1)<rows){
-        potentialDominos.push(createPotentialCell(domino.secondNum,row+1,col,row,col,false,true));
-      }
+      _insertToPotentialDominos(gameName,domino.firstNum,row-1,col,true,true);
+      _insertToPotentialDominos(gameName,domino.secondNum,row+1,col,false,true);
     }
   }
 };
@@ -122,13 +123,15 @@ function updatePotentialDominoes(gameName, domino,row,col){
         tmpArr.push(potentialDomino);
       }
     }
-    potentialDominos = tmpArr;
+    gamesData.get(gameName).potentialDominos = tmpArr;
    
   }
   let validNumbers = [];
   potentialDominos.forEach(
     (potential)=>{if (validNumbers.indexOf(potential.number)==-1) validNumbers.push(potential.number)});
   gamesData.get(gameName).validNumbers = validNumbers;
+  console.log("Potential:");
+  console.log(potentialDominos);
 };
 
 
