@@ -14,7 +14,6 @@ class DominoCash extends Component {
       this.state = {
         sendInProgress:false
     }; 
-     // this.dominosCashArray = this.initDominoCashArray();
           
     }
 
@@ -37,29 +36,16 @@ class DominoCash extends Component {
         
     }
 
-    newGame(){
-      this.props.newGame();
-     // this.dominosCashArray = this.initDominoCashArray();
-      var newSixDominos = [];
-        for(var i = 0; i< 6 ;i++){
-          let newDomino = this.getARandomDomino();
-          newSixDominos[i] = newDomino;
-        }
-      this.props.resetStatAndCangeDominos(newSixDominos);
-      this.numOfTimesPlayerTookFromCash = 0;
-      
-    }
+
 
     getNewDominoFromCash(){
       this.numOfTimesPlayerTookFromCash = this.numOfTimesPlayerTookFromCash + 1;
-      //need to add async await
       this.getARandomDomino();
     }
 
     render() {
       return (
         <div className = "dominoCash">
-            {/* <button onClick={this.newGame.bind(this)}>New Game</button> */}
             <button onClick={this.props.insertDominoToGameBoard}>insertDominoToGameBoard</button>
             <button onClick={this.getNewDominoFromCash.bind(this)} disabled={this.state.sendInProgress}>New Domino</button>
         </div>

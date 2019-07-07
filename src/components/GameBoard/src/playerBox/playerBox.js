@@ -21,7 +21,24 @@ class PlayerBox extends Component {
         playerScore : 0
       };
     }
-
+    componentWillMount(){
+      this.setInitialDominos();
+    }
+    setInitialDominos(){
+      const that = this;
+      fetch('/gameRooms/getInitialDominos', {method: 'GET', credentials: 'include'})
+          .then(response => {            
+              if (!response.ok) {               
+                  throw response;
+              }
+              return response.json();
+                      
+          }).then(initialDominos => {
+              console.log(initialDominos);
+              that.changeDominos(initialDominos);
+          }).catch(err => {throw err});
+        
+    }
     changeDominos(dominos){
       var total = 0;
       this.setState({playerDominos : dominos, selectedDomino : dominos[0]});
@@ -129,9 +146,7 @@ class PlayerBox extends Component {
         <div className = "playerSide">
         <div className = "playerBox">
             <DominoCash 
-            resetStatAndCangeDominos={this.resetStatAndCangeDominos.bind(this)} 
             getNewDominoFromCash={this.getNewDominoFromCash.bind(this)} 
-            newGame = {this.props.newGame}
             numOfTimesPlayerTookFromCash  = {this.props.numOfTimesPlayerTookFromCash}
             insertDominoToGameBoard = {this.insertDominoToGameBoard.bind(this)} 
             setPlayersScore = {this.setPlayersScore.bind(this)}/>

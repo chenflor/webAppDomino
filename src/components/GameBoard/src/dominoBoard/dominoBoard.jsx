@@ -15,6 +15,7 @@ class DominoBoard extends React.Component{
     super(props); 
     //This is an array of the numbers that can be inserted.
     this.potentialDominos = [];
+    this.initialzionTookPlace = false;
     this.firstRound = true;
     this.rows = 14;
     this.cols = 7;
@@ -45,15 +46,6 @@ class DominoBoard extends React.Component{
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
-  }
-  
-  newGame(){
-    this.potentialDominos = [];
-    this.firstRound = true;
-    this.setState({
-      dominosBoard : this.makeEmptyBoard(),
-      validNumbers : [0,1,2,3,4,5,6]
-    });
   }
 
   removeMarkedDominos(){
@@ -129,7 +121,6 @@ class DominoBoard extends React.Component{
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
         <PlayerBox 
         validNumbers = {this.state.validNumbers} 
-        newGame ={this.newGame.bind(this)} 
         insertDominoToGameBoard ={this.insertDominoToGameBoard.bind(this)}
         firstRound = {this.firstRound}
         calcPotentialDominos = {this.calcPotentialDominos.bind(this)}/> 
