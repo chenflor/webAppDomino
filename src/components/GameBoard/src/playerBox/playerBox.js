@@ -104,13 +104,6 @@ class PlayerBox extends Component {
       }
     }
 
-    resetStatAndCangeDominos(dominos){
-      this.numOfTurns = 0;
-      this.isNewGame = !this.isNewGame;
-      this.playerTookFromCash = 0;
-      this.changeDominos(dominos);
-    }
-
     findDominoInPlayerDomino(someDomino){
       for(var i=0; i<this.state.playerDominos.length; i++ ){
         if(DominoUtils.isDominoEqual(someDomino,this.state.playerDominos[i])){

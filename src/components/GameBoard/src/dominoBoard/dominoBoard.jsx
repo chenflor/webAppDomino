@@ -15,7 +15,6 @@ class DominoBoard extends React.Component{
     super(props); 
     //This is an array of the numbers that can be inserted.
     this.potentialDominos = [];
-    this.initialzionTookPlace = false;
     this.firstRound = true;
     this.rows = 14;
     this.cols = 7;
