@@ -12,9 +12,16 @@ class DominoCash extends Component {
       this.gameStartTime = 0;
       this.timeFromGameStart = 0;
       this.state = {
-        sendInProgress:false
+        sendInProgress:false,
+        isItMyTurn : false
     }; 
           
+    }
+
+    componentWillReceiveProps(nextProps){
+      if(nextProps.isItMyTurn != this.props.isItMyTurn){
+        this.setState({isItMyTurn : nextProps.isItMyTurn});
+      }
     }
 
     getARandomDomino(){
@@ -44,10 +51,11 @@ class DominoCash extends Component {
     }
 
     render() {
+      this.state.isItMyTurn = this.props.isItMyTurn;
       return (
         <div className = "dominoCash">
-            <button onClick={this.props.insertDominoToGameBoard}>insertDominoToGameBoard</button>
-            <button onClick={this.getNewDominoFromCash.bind(this)} disabled={this.state.sendInProgress}>New Domino</button>
+            <button onClick={this.props.insertDominoToGameBoard}disabled= {!this.state.isItMyTurn }>insertDominoToGameBoard</button>
+            <button onClick={this.getNewDominoFromCash.bind(this)} disabled={this.state.sendInProgress||(!this.state.isItMyTurn) }>New Domino</button>
         </div>
       );
     }
@@ -58,7 +66,8 @@ class DominoCash extends Component {
     getNewDominoFromCash         : propTypes.func,
     changeDominos                : propTypes.func,
     insertDominoToGameBoard      : propTypes.func,
-    numOfTimesPlayerTookFromCash : propTypes.number
+    numOfTimesPlayerTookFromCash : propTypes.number,
+    isItMyTurn                   : propTypes.bool
   };
   
   export default DominoCash;

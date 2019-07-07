@@ -14,14 +14,14 @@ const gameRoomsManagement = express.Router();
 // });
 
 
-gameRoomsManagement.get('/getARandomDomino',(req, res) => {		
-	res.json(gameRooms.getARandomDomino(auth.getUserInfo(req.session.id).name));	
+gameRoomsManagement.get('/getARandomDomino',(req, res) => {
+	res.json(gameRooms.getARandomDomino(auth.getUserInfo(req.session.id).name,true));	
 });
 gameRoomsManagement.get('/getInitialDominos',(req, res) => {
 	let initialDominos = [];
 	let userName = auth.getUserInfo(req.session.id).name;
 	for(var i=0; i<6;i++){
-		initialDominos.push(gameRooms.getARandomDomino(userName));
+		initialDominos.push(gameRooms.getARandomDomino(userName,false));
 	}		
 	res.json(initialDominos);	
 });

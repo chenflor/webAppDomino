@@ -93,16 +93,13 @@ function initDominoCashArray(){
     return ansArray;
 }
 
-function getARandomDomino(playerName){
+function getARandomDomino(playerName, nextTurn){
     var indexOfGame = findGameIndexByPlayer(playerName);
     let curGameCash = gameRooms[indexOfGame].cashOfDominos;
     if(curGameCash.length<1){
       console.info("No Domino pieces left in Cash, returning null");
       return null;
     }
-    console.log(playerName);
-    
-    console.log(indexOfGame);
     let max = curGameCash.length-1;
     let min = 0;
     let index = Math.floor(Math.random()*(max-min+1)+min);
@@ -117,13 +114,15 @@ function getARandomDomino(playerName){
         j = j+1;
     }
     gameRooms[indexOfGame].cashOfDominos = tempArray;
-
+    if(nextTurn){
+        gameBoards.nextTurn(gameRooms[indexOfGame].game.gameName);
+    }
     return ans;
   }
 
 function startGame(index){
     gameRooms[index].cashOfDominos = initDominoCashArray();
-    gameBoards.newGame(gameRooms[index].game.gameName, gameRooms[index].game.listOfPlayers);
+    gameBoards.newGame(gameRooms[index].game.gameName, gameRooms[index].game.registeredUsersList);
 }
 function deleteGameRoom(){
     

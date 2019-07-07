@@ -138,7 +138,8 @@ class PlayerBox extends Component {
       return (
         <div className = "playerSide">
         <div className = "playerBox">
-            <DominoCash 
+            <DominoCash
+            isItMyTurn = {this.props.isItMyTurn} 
             getNewDominoFromCash={this.getNewDominoFromCash.bind(this)} 
             numOfTimesPlayerTookFromCash  = {this.props.numOfTimesPlayerTookFromCash}
             insertDominoToGameBoard = {this.insertDominoToGameBoard.bind(this)} 
