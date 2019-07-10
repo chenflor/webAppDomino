@@ -109,9 +109,10 @@ class DominoBoard extends React.Component{
     }).then(isItMyTurnObj => {
         that.setState({isItMyTurn: isItMyTurnObj.isItMyTurn});
         this.TurntimeoutId = setTimeout(this.isItMyTurn, 400);
-        return isItMyTurn.isItMyTurn; 
+        return this.state.isItMyTurn; 
     }).catch(err => {throw err});
   }
+
   getDominosBoard(){
     const that = this;
     fetch('/gameBoards/getGameBoard', {method: 'GET', credentials: 'include'})
