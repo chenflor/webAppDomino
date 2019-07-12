@@ -10,12 +10,13 @@ const INITIAL_DOMINO_VALUES = {
 const rows = 14;
 const cols = 7;
 const initBoardData = {
-    gameName         : "",
-    dominosBoard     : null,
-    validNumbers     : [0,1,2,3,4,5,6],
-    playersList      : [],
-    firstRound       : true,
-    potentialDominos : [],
+    gameName          : "",
+    dominosBoard      : null,
+    validNumbers      : [0,1,2,3,4,5,6],
+    playersList       : [],
+    firstRound        : true,
+    potentialDominos  : [],
+    currentPlayerTurn : ""
 };
 
 function initBoard() {
@@ -37,6 +38,7 @@ function newGame(gameName , playersList){
     newGameBoardData.potentialDominos = [];
     newGameBoardData.dominosBoard = initBoard();
     newGameBoardData.validNumbers = [0,1,2,3,4,5,6];
+    newGameBoardData.currentPlayerTurn = playersList[0];
     gamesData.set(gameName, newGameBoardData);
 
 };
@@ -123,7 +125,9 @@ function updatePotentialDominoes(gameName, domino,row,col){
         tmpArr.push(potentialDomino);
       }
     }
+
     gamesData.get(gameName).potentialDominos = tmpArr;
+    potentialDominos = gamesData.get(gameName).potentialDominos
    
   }
   let validNumbers = [];
@@ -184,7 +188,19 @@ function createDominoCellFromPlayerDomino(playerDomino){
       isPotential     : false
     });
   };
+function nextTurn(gameName){
+  let playersList = gamesData.get(gameName).playersList;
+  let currentPlayerTurn = gamesData.get(gameName).currentPlayerTurn;
+  let index = playersList.indexOf(currentPlayerTurn);
+  if (index==(playersList.length-1)){
+    gamesData.get(gameName).currentPlayerTurn = playersList[0];
+  }
+  else{
+    gamesData.get(gameName).currentPlayerTurn = playersList[index+1];
+  }
+  
 
+}
 function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
   console.log("In insertDominoToGameBoard" + playerDominoToBeInserted );
   let insertSucsessfully = false;
@@ -195,6 +211,7 @@ function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
       gamesData.get(gameName).dominosBoard[location.row][location.col] = dominoCell;
       gamesData.get(gameName).firstRound = false;
       insertSucsessfully = true;
+      nextTurn(gameName);
       updatePotentialDominoes(gameName, dominoCell, location.row, location.col);
 
     }  
@@ -209,23 +226,9 @@ function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
 };
 
 
-// function calcPotentialDominos(playerDominoToBeInserted,gameName){
-//     this.removeMarkedDominos();
-//     let potentialDominos = gamesData.get(gameName).potentialDominos;
-//     for(var i =0; i<potentialDominos.length;i++){
-//       let potentialDomino = potentialDominos[i];
-//       if((potentialDomino.number === playerDominoToBeInserted.firstNum)||
-//         (potentialDomino.number === playerDominoToBeInserted.secondNum)){
-//         gamesData.get(gameName).dominosBoard[potentialDomino.row][potentialDomino.col].isPotential = true;
-//       } 
-//     }
-//     this.setState({dominosBoard : this.state.dominosBoard});
-//   }
-
-
 function getGameBoard(gameName){
     let ans = gamesData.get(gameName);
     return ans;
 };
 
-module.exports = {getGameBoard, newGame, insertDominoToGameBoard};
+module.exports = {getGameBoard, newGame, insertDominoToGameBoard, nextTurn};

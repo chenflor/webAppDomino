@@ -19,12 +19,14 @@ class DominoBoard extends React.Component{
     this.rows = 14;
     this.cols = 7;
     this.state = {
-      dominosBoard               : this.makeEmptyBoard(),
-      validNumbers               : [0,1,2,3,4,5,6]
+      dominosBoard       : this.makeEmptyBoard(),
+      validNumbers       : [0,1,2,3,4,5,6],
+      currentPlayerTurn  : "",
+      isItMyTurn         : false
     };
 
     this.getDominosBoard = this.getDominosBoard.bind(this);
-
+    this.isItMyTurn = this.isItMyTurn.bind(this);
   }
 
   makeEmptyBoard() {
@@ -40,20 +42,15 @@ class DominoBoard extends React.Component{
   
   componentDidMount(){
     this.getDominosBoard();
+    this.isItMyTurn();
   }
   componentWillUnmount(){
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
-  }
-  
-  newGame(){
-    this.potentialDominos = [];
-    this.firstRound = true;
-    this.setState({
-      dominosBoard : this.makeEmptyBoard(),
-      validNumbers : [0,1,2,3,4,5,6]
-    });
+    if(this.TurntimeoutId){
+      clearTimeout(this.TurntimeoutId);
+    }
   }
 
   removeMarkedDominos(){
@@ -100,6 +97,21 @@ class DominoBoard extends React.Component{
 
 
 
+  isItMyTurn(){
+    const that = this;
+    fetch('/gameBoards/isItMyTurn', {method: 'GET', credentials: 'include'})
+    .then(response => {            
+        if (!response.ok) {               
+            throw response;
+        }
+        return response.json();
+                
+    }).then(isItMyTurnObj => {
+        that.setState({isItMyTurn: isItMyTurnObj.isItMyTurn});
+        this.TurntimeoutId = setTimeout(this.isItMyTurn, 400);
+        return this.state.isItMyTurn; 
+    }).catch(err => {throw err});
+  }
 
   getDominosBoard(){
     const that = this;
@@ -113,6 +125,7 @@ class DominoBoard extends React.Component{
     }).then(board => {
         that.setState({dominosBoard: board.dominosBoard, 
           potential :board.potential,
+          currentPlayerTurn : board.currentPlayerTurn,
           validNumbers : board.validNumbers});
 
         this.timeoutId = setTimeout(this.getDominosBoard, 400);
@@ -124,12 +137,18 @@ class DominoBoard extends React.Component{
 
 
   render(){
+    let curPlayerTurnName = this.state.currentPlayerTurn;
+    let turnText = "";
+    if(curPlayerTurnName){
+      turnText = curPlayerTurnName+ "'s Turn"
+    }
     return (
       <div className = "board">
+        <h1>{turnText}</h1>
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
-        <PlayerBox 
+        <PlayerBox
+        isItMyTurn   = {this.state.isItMyTurn} 
         validNumbers = {this.state.validNumbers} 
-        newGame ={this.newGame.bind(this)} 
         insertDominoToGameBoard ={this.insertDominoToGameBoard.bind(this)}
         firstRound = {this.firstRound}
         calcPotentialDominos = {this.calcPotentialDominos.bind(this)}/> 

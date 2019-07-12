@@ -12,10 +12,16 @@ class DominoCash extends Component {
       this.gameStartTime = 0;
       this.timeFromGameStart = 0;
       this.state = {
-        sendInProgress:false
+        sendInProgress:false,
+        isItMyTurn : false
     }; 
-     // this.dominosCashArray = this.initDominoCashArray();
           
+    }
+
+    componentWillReceiveProps(nextProps){
+      if(nextProps.isItMyTurn != this.props.isItMyTurn){
+        this.setState({isItMyTurn : nextProps.isItMyTurn});
+      }
     }
 
     getARandomDomino(){
@@ -37,31 +43,19 @@ class DominoCash extends Component {
         
     }
 
-    newGame(){
-      this.props.newGame();
-     // this.dominosCashArray = this.initDominoCashArray();
-      var newSixDominos = [];
-        for(var i = 0; i< 6 ;i++){
-          let newDomino = this.getARandomDomino();
-          newSixDominos[i] = newDomino;
-        }
-      this.props.resetStatAndCangeDominos(newSixDominos);
-      this.numOfTimesPlayerTookFromCash = 0;
-      
-    }
+
 
     getNewDominoFromCash(){
       this.numOfTimesPlayerTookFromCash = this.numOfTimesPlayerTookFromCash + 1;
-      //need to add async await
       this.getARandomDomino();
     }
 
     render() {
+      this.state.isItMyTurn = this.props.isItMyTurn;
       return (
         <div className = "dominoCash">
-            {/* <button onClick={this.newGame.bind(this)}>New Game</button> */}
-            <button onClick={this.props.insertDominoToGameBoard}>insertDominoToGameBoard</button>
-            <button onClick={this.getNewDominoFromCash.bind(this)} disabled={this.state.sendInProgress}>New Domino</button>
+            <button onClick={this.props.insertDominoToGameBoard}disabled= {!this.state.isItMyTurn }>insertDominoToGameBoard</button>
+            <button onClick={this.getNewDominoFromCash.bind(this)} disabled={this.state.sendInProgress||(!this.state.isItMyTurn) }>New Domino</button>
         </div>
       );
     }
@@ -72,7 +66,8 @@ class DominoCash extends Component {
     getNewDominoFromCash         : propTypes.func,
     changeDominos                : propTypes.func,
     insertDominoToGameBoard      : propTypes.func,
-    numOfTimesPlayerTookFromCash : propTypes.number
+    numOfTimesPlayerTookFromCash : propTypes.number,
+    isItMyTurn                   : propTypes.bool
   };
   
   export default DominoCash;
