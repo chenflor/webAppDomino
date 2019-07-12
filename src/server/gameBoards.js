@@ -125,7 +125,9 @@ function updatePotentialDominoes(gameName, domino,row,col){
         tmpArr.push(potentialDomino);
       }
     }
+
     gamesData.get(gameName).potentialDominos = tmpArr;
+    potentialDominos = gamesData.get(gameName).potentialDominos
    
   }
   let validNumbers = [];
