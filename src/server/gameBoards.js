@@ -12,13 +12,38 @@ const cols = 7;
 const initBoardData = {
     gameName          : "",
     dominosBoard      : null,
+    gameEnded         : false,
     validNumbers      : [0,1,2,3,4,5,6],
-    playersList       : [],
+    activePlayersList : [],
+    playersWon        : [],
     firstRound        : true,
     potentialDominos  : [],
     currentPlayerTurn : ""
 };
 
+function addPlayerWon(playerName, gameName){
+  let gameData = gamesData.get(gameName);
+  let index = gameData.activePlayersList.indexOf(playerName);
+  if(index > -1){
+    gameData.activePlayersList.splice(index,1);
+    gameData.playersWon.push(playerName);
+    updateHasGameEnded(gameName);
+    return true;
+  
+  }
+  return false;
+  
+}
+
+function updateHasGameEnded(gameName){
+  let gameData = gamesData.get(gameName)
+  if(gameData.activePlayersList.length ==0 ){
+    gameData.gameEnded = true;
+  }
+  else{
+    gameData.gameEnded = false;
+  }
+}
 function initBoard() {
     var board = new Array;
     for (var row = 0; row < rows; row++) {
@@ -30,15 +55,15 @@ function initBoard() {
     return board;
 };
 
-function newGame(gameName , playersList){
+function newGame(gameName , activePlayersList){
     console.log("new game in game boards" + gameName);
     var newGameBoardData = initBoardData;
     newGameBoardData.gameName = gameName;
-    newGameBoardData.playersList = playersList;
+    newGameBoardData.activePlayersList = activePlayersList;
     newGameBoardData.potentialDominos = [];
     newGameBoardData.dominosBoard = initBoard();
     newGameBoardData.validNumbers = [0,1,2,3,4,5,6];
-    newGameBoardData.currentPlayerTurn = playersList[0];
+    newGameBoardData.currentPlayerTurn = activePlayersList[0];
     gamesData.set(gameName, newGameBoardData);
 
 };
@@ -189,14 +214,14 @@ function createDominoCellFromPlayerDomino(playerDomino){
     });
   };
 function nextTurn(gameName){
-  let playersList = gamesData.get(gameName).playersList;
+  let activePlayersList = gamesData.get(gameName).activePlayersList;
   let currentPlayerTurn = gamesData.get(gameName).currentPlayerTurn;
-  let index = playersList.indexOf(currentPlayerTurn);
-  if (index==(playersList.length-1)){
-    gamesData.get(gameName).currentPlayerTurn = playersList[0];
+  let index = activePlayersList.indexOf(currentPlayerTurn);
+  if (index==(activePlayersList.length-1)){
+    gamesData.get(gameName).currentPlayerTurn = activePlayersList[0];
   }
   else{
-    gamesData.get(gameName).currentPlayerTurn = playersList[index+1];
+    gamesData.get(gameName).currentPlayerTurn = activePlayersList[index+1];
   }
   
 
@@ -231,4 +256,4 @@ function getGameBoard(gameName){
     return ans;
 };
 
-module.exports = {getGameBoard, newGame, insertDominoToGameBoard, nextTurn};
+module.exports = {getGameBoard, newGame, insertDominoToGameBoard, nextTurn, addPlayerWon};

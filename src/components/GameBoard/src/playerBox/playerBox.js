@@ -74,9 +74,23 @@ class PlayerBox extends Component {
         this.setState({
           playerDominos : this.state.playerDominos
         });
+        if(this.state.playerDominos.length == 0){
+          this.playerWon();
+        }
       }
       this.setPlayersScore(false,dominoToBeRemoved.firstNum + dominoToBeRemoved.secondNum);
     }
+
+    playerWon(){
+      console.log("In Player won");
+      fetch('/gameBoards/playerWon', {method: 'POST', credentials: 'include'})
+          .then(response => {            
+              if (!response.ok) {               
+                  throw response;
+              }
+          }).catch(err => {throw err});
+    }
+    
     insertDominoToGameBoard(){
       if(this.state.selectedDomino!=undefined && 
         this.state.playerDominos.some(domino => DominoUtils.isDominoEqual(domino,this.state.selectedDomino))&&

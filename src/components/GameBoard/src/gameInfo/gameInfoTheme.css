@@ -1,0 +1,9 @@
+ol::before{
+    content: attr(title);
+    font-size: 120%;
+    font-weight:bold;
+    margin-left:-20px;
+    text-align: justify;
+    text-align-last: justify;
+    
+}

@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import dominoBoardTheme from "./dominoBoardTheme.css";
-import PlayerBox from "../playerBox/PlayerBox.js"
+import PlayerBox from "../playerBox/PlayerBox.js";
 import DominoGameBoard from "../DominoGameBoard/dominoGameBoard.jsx";
-import Statistics from "../statistics/statistics.js"
+import Statistics from "../statistics/statistics.js";
+import GameInfo from "../gameInfo/gameInfo.jsx";
+
 const INITIAL_DOMINO_VALUES = {
   isDisplayed  : false,
   firstNum     : 2,
@@ -22,7 +24,9 @@ class DominoBoard extends React.Component{
       dominosBoard       : this.makeEmptyBoard(),
       validNumbers       : [0,1,2,3,4,5,6],
       currentPlayerTurn  : "",
-      isItMyTurn         : false
+      isItMyTurn         : false,
+      activePlayersList   : [],
+      playersWon         : []
     };
 
     this.getDominosBoard = this.getDominosBoard.bind(this);
@@ -126,6 +130,8 @@ class DominoBoard extends React.Component{
         that.setState({dominosBoard: board.dominosBoard, 
           potential :board.potential,
           currentPlayerTurn : board.currentPlayerTurn,
+          activePlayersList : board.activePlayersList,
+          playersWon   : board.playersWon,
           validNumbers : board.validNumbers});
 
         this.timeoutId = setTimeout(this.getDominosBoard, 400);
@@ -137,14 +143,11 @@ class DominoBoard extends React.Component{
 
 
   render(){
-    let curPlayerTurnName = this.state.currentPlayerTurn;
-    let turnText = "";
-    if(curPlayerTurnName){
-      turnText = curPlayerTurnName+ "'s Turn"
-    }
     return (
       <div className = "board">
-        <h1>{turnText}</h1>
+        <GameInfo currentPlayerTurn = {this.state.currentPlayerTurn}
+                  activePlayers     = {this.state.activePlayersList}
+                  playersWon        = {this.state.playersWon}/>
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
         <PlayerBox
         isItMyTurn   = {this.state.isItMyTurn} 
