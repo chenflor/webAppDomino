@@ -1,5 +1,6 @@
 // const auth = require('./auth');
 const gameBoards = require('./gameBoards');
+// const games = require('./games.js');
 const initialCashSize = 28;
 //gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
@@ -23,7 +24,11 @@ function findGameIndexByPlayer(name){
 }
 
 function findGameNameByPlayer(name){
-    var index = findGameIndexByPlayer(name);
+    let index = findGameIndexByPlayer(name);
+    if(index ==-1){
+        console.warn("Called findGameNameByPlayer for a player that is not in a game");
+        return "";
+    }
     return gameRooms[index].game.gameName;
 }
 
@@ -36,29 +41,41 @@ function findRoom(name){
 	return -1; 
 }
 
-function findOrCreateGameRoom(thisGame){
+function findOrCreateGameRoom(thisGame, gameHasFinshed){
     let newIndex = findRoom(thisGame.gameName);
     if(newIndex == -1){
         let gameRoom = {
             game: thisGame,
-            listOfPlayers: []
+            listOfPlayers: [],
+            gameRoomActive : false,
+            gameHasFinshed : gameHasFinshed
         };
         newIndex = gameRooms.push(gameRoom)-1;
     }
     return newIndex;
 }
 
-function quitGame(playerName,gameName){
+function quitGame(playerName, gameName){
     let index = findRoom(gameName);
     if(index !== -1){
         if(gameRooms[index].game.gameStarted === true){
+            let game = gameBoards.getGameBoard(gameName);
+             //If player has finshed the game, let him exit (dont update room display)
+            if(game.activePlayersList.indexOf(playerName) == -1 || game.gameEnded){
+                if(game.gameEnded && gameRooms[index].gameRoomActive){
+                    gameHasFinshed(index);
+                }
+                return true;
+            }
             return false;
+            
         }
         else{
-            gameRooms[index].game.registeredPlayersCounter--;
-            let playerI = gameRooms[index].listOfPlayers.find((name) =>{
-                return (name === playerName)});
-            gameRooms[index].listOfPlayers.splice(playerI,1);
+            pIndex = gameRooms[index].listOfPlayers.indexOf(playerName);
+            if(pIndex > -1){
+                gameRooms[index].game.registeredPlayersCounter--;
+                gameRooms[index].listOfPlayers.splice(pIndex,1);
+            }
             return true;
         }
     }
@@ -122,15 +139,23 @@ function getARandomDomino(playerName, nextTurn){
   }
 
 function startGame(index){
+    gameRooms[index].gameRoomActive = true;
     gameRooms[index].cashOfDominos = initDominoCashArray();
     gameBoards.newGame(gameRooms[index].game.gameName, gameRooms[index].game.registeredUsersList);
 }
-function deleteGameRoom(){
-    
+function gameHasFinshed(index){
+    if(index > -1 && index < gameRooms.length){
+        gameRooms[index].listOfPlayers = [];
+        gameRooms[index].gameRoomActive = false;
+        gameRooms[index].cashOfDominos = initDominoCashArray();
+        gameRooms[index].gameHasFinshed();
+        //gameRooms.splice(index,1);
+        
+    }
 }
 
 
 module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, 
-                  quitGame, deleteGameRoom, findRoom,
+                  quitGame, gameHasFinshed, findRoom,
                   getGameRoom, removePlayerFromRoom, getARandomDomino,
                   findGameNameByPlayer}
