@@ -7,3 +7,7 @@
     float: left;
     display: flex;
   }
+
+  .inlineText{
+    display: inline;
+  }

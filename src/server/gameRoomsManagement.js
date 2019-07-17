@@ -30,4 +30,5 @@ gameRoomsManagement.get('/getInitialDominos',(req, res) => {
 	res.json(initialDominos);	
 });
 
+
 module.exports = gameRoomsManagement;

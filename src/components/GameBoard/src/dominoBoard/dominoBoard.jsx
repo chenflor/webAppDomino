@@ -26,11 +26,12 @@ class DominoBoard extends React.Component{
       validNumbers       : [0,1,2,3,4,5,6],
       currentPlayerTurn  : "",
       isItMyTurn         : false,
+      playerTookFromCash : "",
       gameEnded          : false,
       activePlayersList   : [],
       playersWon         : []
     };
-
+    this.didSomeOneTookFromCash = this.didSomeOneTookFromCash.bind(this);
     this.getDominosBoard = this.getDominosBoard.bind(this);
     this.isItMyTurn = this.isItMyTurn.bind(this);
   }
@@ -47,9 +48,11 @@ class DominoBoard extends React.Component{
   }
   
   componentDidMount(){
+    
     if(!this.state.gameEnded){
       this.getDominosBoard();
       this.isItMyTurn();
+      this.didSomeOneTookFromCash();
     }
     
   }
@@ -59,6 +62,9 @@ class DominoBoard extends React.Component{
     }
     if(this.TurntimeoutId){
       clearTimeout(this.TurntimeoutId);
+    }
+    if(this.timeOutIdCash){
+      clearTimeout(this.timeOutIdCash);
     }
   }
 
@@ -72,7 +78,19 @@ class DominoBoard extends React.Component{
     this.setState({dominosBoard : this.state.dominosBoard});
   }
 
-
+  didSomeOneTookFromCash(){
+    fetch('/gameBoards/SomeOneTookFromCash', {method: 'GET', credentials: 'include'})
+    .then(response => {            
+        if (!response.ok) {               
+            throw response;
+        }
+        return response.json();
+                
+    }).then(str => {
+        this.setState({playerTookFromCash: str});
+        this.timeOutIdCash = setTimeout(this.didSomeOneTookFromCash, 400);
+    }).catch(err => {throw err});
+  }
 
   insertDominoToGameBoard(playerDominoToBeInserted){
     fetch('/gameBoards/insertDomino', {
@@ -164,9 +182,11 @@ class DominoBoard extends React.Component{
     }
     return (
       <div className = "board">
+        <div className = "inlineText">
         <GameInfo currentPlayerTurn = {this.state.currentPlayerTurn}
                   activePlayers     = {this.state.activePlayersList}
                   playersWon        = {this.state.playersWon}/>
+        <h3>{this.state.playerTookFromCash}</h3></div>
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
         <PlayerBox
         isItMyTurn   = {this.state.isItMyTurn} 
@@ -175,7 +195,7 @@ class DominoBoard extends React.Component{
         firstRound = {this.firstRound}
         calcPotentialDominos = {this.calcPotentialDominos.bind(this)}/> 
       </div>
-    )
+    );
   }
 }
 

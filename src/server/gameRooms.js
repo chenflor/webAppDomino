@@ -4,7 +4,6 @@ const gameBoards = require('./gameBoards');
 const initialCashSize = 28;
 //gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
-
 function getGameRoom(index){
     return gameRooms[index];
 }
@@ -133,6 +132,8 @@ function getARandomDomino(playerName, nextTurn){
     gameRooms[indexOfGame].cashOfDominos = tempArray;
     if(nextTurn){
         gameBoards.nextTurn(gameRooms[indexOfGame].game.gameName);
+        gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash = gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash + 1;
+        gameBoards.changeTookFromCash(playerName + " took from cash");
     }
     return ans;
   }
@@ -152,6 +153,7 @@ function gameHasFinshed(index){
         
     }
 }
+
 
 module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, 
                   quitGame, gameHasFinshed, findRoom,

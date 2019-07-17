@@ -41,7 +41,6 @@ function findGame(name){
 function findGameFromUserName(req,res,next){
 	let found = false;
 	let name = auth.getUserInfo(req.session.id).name;
-	// console.log(gamesList);
 	for(var i =0; i< gamesList.length; i++){
 		if(gamesList[i].registeredUsersList.indexOf(name)>=0){
 			res.locals.currentGame = gamesList[i];
@@ -113,7 +112,6 @@ function deleteGame(req, res, next) {
 	}
 	else {						
 		gamesList.splice(index, 1);
-		// console.log(gamesList);
 		next();
 	}
 }

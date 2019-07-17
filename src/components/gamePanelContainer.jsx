@@ -31,8 +31,6 @@ export default class gamePanelContainer extends React.Component {
 
 
     handleSuccessedRegister(game) {
-        // console.log("handleSuccessedRegister");
-        // console.log(game);
         this.enterGameRoom(game);
     }
 

@@ -46,6 +46,13 @@ gameBoardsManagement.post('/insertDomino',(req, res) => {
     }	
 });
 
+gameBoardsManagement.get('/getPlayerStatistics',(req, res) => {
+	res.json(gameBoards.getPlayerStatistics(auth.getUserInfo(req.session.id).name));	
+});
+
+gameBoardsManagement.get('/SomeOneTookFromCash',(req, res) =>{
+    res.json(gameBoards.SomeOneTookFromCash())
+});
 gameBoardsManagement.post('/playerWon',(req,res) =>{
     let userName = auth.getUserInfo(req.session.id).name;
     let gameName = gameRooms.findGameNameByPlayer(userName);

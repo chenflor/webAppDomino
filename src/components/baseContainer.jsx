@@ -49,7 +49,6 @@ export default class BaseContainer extends React.Component {
 
     
     initState(params) {
-        // console.log("Init State");
         this.setState(()=>({currentUser: {name:''}, showLogin: true, isInGameRoom : false,Game: {}}));
     }
 
@@ -96,7 +95,6 @@ export default class BaseContainer extends React.Component {
     }
 
     renderGamePanel() {
-        // console.log(this.state.currentUser);
         return(
             <div className="chat-base-container">
                 <UserInfo userName = {this.state.currentUser.name} logoutHandler = {this.logoutHandler}/>
@@ -105,13 +103,6 @@ export default class BaseContainer extends React.Component {
         )
     }
 
-    // fetch('/users/logout', {method: 'GET', credentials: 'include'})
-            // .then(response => {
-            //     if (!response.ok) {
-            //         console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
-            //     }
-            // this.setState(()=>({currentUser: {name:''}, showLogin: true}));
-            // })
     logoutHandler() {
         fetch('/users/logout', {
             method: 'POST',
