@@ -37,7 +37,11 @@ function addPlayerWon(playerName, gameName){
 
 function updateHasGameEnded(gameName){
   let gameData = gamesData.get(gameName)
-  if(gameData.activePlayersList.length ==0 ){
+  if(gameData.activePlayersList.length ==1 ){
+    gameData.playersWon.push(gameData.activePlayersList[0]);
+    gameData.gameEnded = true;
+  }
+  else if(gameData.activePlayersList.length ==0){
     gameData.gameEnded = true;
   }
   else{
@@ -57,10 +61,13 @@ function initBoard() {
 
 function newGame(gameName , activePlayersList){
     console.log("new game in game boards" + gameName);
-    var newGameBoardData = initBoardData;
+    var newGameBoardData = new Object();
     newGameBoardData.gameName = gameName;
+    newGameBoardData.gameEnded  = false;
     newGameBoardData.activePlayersList = activePlayersList;
     newGameBoardData.potentialDominos = [];
+    newGameBoardData.playersWon = [];
+    newGameBoardData.firstRound = true;
     newGameBoardData.dominosBoard = initBoard();
     newGameBoardData.validNumbers = [0,1,2,3,4,5,6];
     newGameBoardData.currentPlayerTurn = activePlayersList[0];

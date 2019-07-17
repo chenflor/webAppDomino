@@ -5,6 +5,10 @@ const auth = require('./auth');
 
 const gameRoomsManagement = express.Router();
 
+//For Testing change later
+const NUMBER_OF_INITIAL_DOMINOS = 1;
+// const NUMBER_OF_INITIAL_DOMINOS = 6;
+
 // gameRoomsManagement.post('/quitGame', gameRooms.quitGame, (req, res) => {		
 // 	res.sendStatus(200);	
 // });
@@ -20,7 +24,7 @@ gameRoomsManagement.get('/getARandomDomino',(req, res) => {
 gameRoomsManagement.get('/getInitialDominos',(req, res) => {
 	let initialDominos = [];
 	let userName = auth.getUserInfo(req.session.id).name;
-	for(var i=0; i<6;i++){
+	for(var i=0; i<NUMBER_OF_INITIAL_DOMINOS;i++){
 		initialDominos.push(gameRooms.getARandomDomino(userName,false));
 	}		
 	res.json(initialDominos);	

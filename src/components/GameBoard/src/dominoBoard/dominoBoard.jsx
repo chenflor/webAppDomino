@@ -4,6 +4,7 @@ import PlayerBox from "../playerBox/PlayerBox.js";
 import DominoGameBoard from "../DominoGameBoard/dominoGameBoard.jsx";
 import Statistics from "../statistics/statistics.js";
 import GameInfo from "../gameInfo/gameInfo.jsx";
+import GameEnded from "../gameEnded/gameEnded.jsx";
 
 const INITIAL_DOMINO_VALUES = {
   isDisplayed  : false,
@@ -25,6 +26,7 @@ class DominoBoard extends React.Component{
       validNumbers       : [0,1,2,3,4,5,6],
       currentPlayerTurn  : "",
       isItMyTurn         : false,
+      gameEnded          : false,
       activePlayersList   : [],
       playersWon         : []
     };
@@ -129,6 +131,7 @@ class DominoBoard extends React.Component{
     }).then(board => {
         that.setState({dominosBoard: board.dominosBoard, 
           potential :board.potential,
+          gameEnded : board.gameEnded,
           currentPlayerTurn : board.currentPlayerTurn,
           activePlayersList : board.activePlayersList,
           playersWon   : board.playersWon,
@@ -143,6 +146,15 @@ class DominoBoard extends React.Component{
 
 
   render(){
+    if(this.state.gameEnded){
+      return (<React.Fragment>
+                <GameInfo currentPlayerTurn = {this.state.currentPlayerTurn}
+                            activePlayers     = {[]}
+                          playersWon        = {this.state.playersWon}/>
+                  <GameEnded/>
+              </React.Fragment>
+      );
+    }
     return (
       <div className = "board">
         <GameInfo currentPlayerTurn = {this.state.currentPlayerTurn}
