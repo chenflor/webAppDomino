@@ -34,7 +34,6 @@ class PlayerBox extends Component {
               return response.json();
                       
           }).then(initialDominos => {
-              console.log(initialDominos);
               that.changeDominos(initialDominos);
           }).catch(err => {throw err});
         

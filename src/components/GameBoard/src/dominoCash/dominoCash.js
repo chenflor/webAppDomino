@@ -35,7 +35,6 @@ class DominoCash extends Component {
               return response.json();
                       
           }).then(randomDomino => {
-              console.log(randomDomino); 
               that.setState({sendInProgress: false});
               that.props.getNewDominoFromCash(randomDomino);
               return randomDomino; 

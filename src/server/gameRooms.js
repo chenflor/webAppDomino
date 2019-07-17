@@ -1,10 +1,8 @@
 // const auth = require('./auth');
-
 const gameBoards = require('./gameBoards');
 const initialCashSize = 28;
 //gameRooms {game, listOfPlayers, cashOfDominos}
 const gameRooms = [];
-
 function getGameRoom(index){
     return gameRooms[index];
 }
@@ -25,7 +23,8 @@ function findGameIndexByPlayer(name){
 }
 
 function findGameNameByPlayer(name){
-    return gameRooms[findGameIndexByPlayer(name)].game.gameName;
+    var index = findGameIndexByPlayer(name);
+    return gameRooms[index].game.gameName;
 }
 
 function findRoom(name){
@@ -116,6 +115,8 @@ function getARandomDomino(playerName, nextTurn){
     gameRooms[indexOfGame].cashOfDominos = tempArray;
     if(nextTurn){
         gameBoards.nextTurn(gameRooms[indexOfGame].game.gameName);
+        gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash = gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash + 1;
+        gameBoards.changeTookFromCash(playerName + " took from cash");
     }
     return ans;
   }
@@ -127,6 +128,7 @@ function startGame(index){
 function deleteGameRoom(){
     
 }
+
 
 module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, 
                   quitGame, deleteGameRoom, findRoom,

@@ -74,7 +74,6 @@ export default class gamesArea extends React.Component {
             return response.json();
                     
         }).then(curGame => {
-            console.log(curGame);
             this.props.handleSuccessedRegister(curGame);
             this.props.enterGameRoom(curGame);
             this.setState(()=>({sendInProgress: false}));      

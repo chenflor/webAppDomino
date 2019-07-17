@@ -1,5 +1,7 @@
 //{key:gameName, value:board}
 var gamesData = new Map();
+var playerStatistics = new Map();
+var tookFromCash = " ";
 
 const INITIAL_DOMINO_VALUES = {
   isDisplayed  : false, 
@@ -31,7 +33,6 @@ function initBoard() {
 };
 
 function newGame(gameName , playersList){
-    console.log("new game in game boards" + gameName);
     var newGameBoardData = initBoardData;
     newGameBoardData.gameName = gameName;
     newGameBoardData.playersList = playersList;
@@ -40,8 +41,20 @@ function newGame(gameName , playersList){
     newGameBoardData.validNumbers = [0,1,2,3,4,5,6];
     newGameBoardData.currentPlayerTurn = playersList[0];
     gamesData.set(gameName, newGameBoardData);
-
+    for(index in playersList){
+      let startGameStati = new Object();
+      startGameStati.newGameStartTime = new Date();
+      startGameStati.numOfTurns = 0;
+      startGameStati.timeFromGameStart = 0;
+      startGameStati.startTimeForPlayerTurn = 0;
+      startGameStati.avgTimeForPlayerTurn = 0;
+      startGameStati.numOfTimesPlayerTookFromCash = 0;
+      startGameStati.playerScore = 0;
+      playerStatistics.set(playersList[index], startGameStati);
+    }
+    playerStatistics.get(newGameBoardData.currentPlayerTurn).startTimeForPlayerTurn = new Date();
 };
+
 function isDoubleDomino(domino){
     if(domino.firstNum == domino.secondNum){
         return true;
@@ -134,8 +147,6 @@ function updatePotentialDominoes(gameName, domino,row,col){
   potentialDominos.forEach(
     (potential)=>{if (validNumbers.indexOf(potential.number)==-1) validNumbers.push(potential.number)});
   gamesData.get(gameName).validNumbers = validNumbers;
-  console.log("Potential:");
-  console.log(potentialDominos);
 };
 
 
@@ -188,21 +199,42 @@ function createDominoCellFromPlayerDomino(playerDomino){
       isPotential     : false
     });
   };
+
+function updateAvgPlayerTime(startTime, name){
+  var oldAvg = playerStatistics.get(name).avgTimeForPlayerTurn;
+  var turns = playerStatistics.get(name).numOfTurns;
+  var now = new Date().getTime();
+  var turnTime = now - new Date(startTime).getTime();
+  if(turns > 1){
+    var sum = oldAvg*(turns - 1);
+    var avg = (turnTime + sum)/turns;
+    playerStatistics.get(name).avgTimeForPlayerTurn = avg;
+  }
+  else if(turns === 1){
+    playerStatistics.get(name).avgTimeForPlayerTurn = turnTime;
+  }
+}
+
 function nextTurn(gameName){
   let playersList = gamesData.get(gameName).playersList;
   let currentPlayerTurn = gamesData.get(gameName).currentPlayerTurn;
   let index = playersList.indexOf(currentPlayerTurn);
+  playerStatistics.get(currentPlayerTurn).numOfTurns = playerStatistics.get(currentPlayerTurn).numOfTurns + 1;
+  updateAvgPlayerTime(playerStatistics.get(currentPlayerTurn).startTimeForPlayerTurn, currentPlayerTurn);
+  var newPlayer;
   if (index==(playersList.length-1)){
-    gamesData.get(gameName).currentPlayerTurn = playersList[0];
+    newPlayer = playersList[0];
+    gamesData.get(gameName).currentPlayerTurn = newPlayer;
   }
   else{
-    gamesData.get(gameName).currentPlayerTurn = playersList[index+1];
+    newPlayer = playersList[index+1];
+    gamesData.get(gameName).currentPlayerTurn = newPlayer;
   }
-  
-
+  playerStatistics.get(newPlayer).startTimeForPlayerTurn = new Date();
+  changeTookFromCash(" ");
 }
+
 function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
-  console.log("In insertDominoToGameBoard" + playerDominoToBeInserted );
   let insertSucsessfully = false;
   if(canDominoBeInsertedToGameBoard(playerDominoToBeInserted, gameName)){
     let dominoCell = createDominoCellFromPlayerDomino(playerDominoToBeInserted);
@@ -223,12 +255,35 @@ function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
 
   return insertSucsessfully;
 
-};
-
+}
 
 function getGameBoard(gameName){
     let ans = gamesData.get(gameName);
     return ans;
-};
+}
 
-module.exports = {getGameBoard, newGame, insertDominoToGameBoard, nextTurn};
+function getSecondesAndMinutes(startTime){
+  let newTime = "00:00";
+  if(startTime){
+    let minutes = new Date().getMinutes() - startTime.getMinutes();
+    let sec = new Date().getSeconds();
+    newTime = minutes + ':' + sec;
+  }
+  return newTime
+}
+
+function getPlayerStatistics(playerName){ 
+  var playerObj = playerStatistics.get(playerName);
+  playerObj.timeFromGameStart = getSecondesAndMinutes(playerStatistics.get(playerName).newGameStartTime);
+  return playerStatistics.get(playerName);
+}
+
+function changeTookFromCash(newTookFromCash){
+  tookFromCash = newTookFromCash;
+}
+
+function SomeOneTookFromCash(){
+  return tookFromCash;
+}
+
+module.exports = {changeTookFromCash,SomeOneTookFromCash, playerStatistics, getGameBoard, newGame, insertDominoToGameBoard, nextTurn, getPlayerStatistics};

@@ -22,9 +22,10 @@ class DominoBoard extends React.Component{
       dominosBoard       : this.makeEmptyBoard(),
       validNumbers       : [0,1,2,3,4,5,6],
       currentPlayerTurn  : "",
-      isItMyTurn         : false
+      isItMyTurn         : false,
+      playerTookFromCash : ""
     };
-
+    this.didSomeOneTookFromCash = this.didSomeOneTookFromCash.bind(this);
     this.getDominosBoard = this.getDominosBoard.bind(this);
     this.isItMyTurn = this.isItMyTurn.bind(this);
   }
@@ -43,6 +44,7 @@ class DominoBoard extends React.Component{
   componentDidMount(){
     this.getDominosBoard();
     this.isItMyTurn();
+    this.didSomeOneTookFromCash();
   }
   componentWillUnmount(){
     if (this.timeoutId) {
@@ -50,6 +52,9 @@ class DominoBoard extends React.Component{
     }
     if(this.TurntimeoutId){
       clearTimeout(this.TurntimeoutId);
+    }
+    if(this.timeOutIdCash){
+      clearTimeout(this.timeOutIdCash);
     }
   }
 
@@ -63,7 +68,19 @@ class DominoBoard extends React.Component{
     this.setState({dominosBoard : this.state.dominosBoard});
   }
 
-
+  didSomeOneTookFromCash(){
+    fetch('/gameBoards/SomeOneTookFromCash', {method: 'GET', credentials: 'include'})
+    .then(response => {            
+        if (!response.ok) {               
+            throw response;
+        }
+        return response.json();
+                
+    }).then(str => {
+        this.setState({playerTookFromCash: str});
+        this.timeOutIdCash = setTimeout(this.didSomeOneTookFromCash, 400);
+    }).catch(err => {throw err});
+  }
 
   insertDominoToGameBoard(playerDominoToBeInserted){
     fetch('/gameBoards/insertDomino', {
@@ -144,7 +161,9 @@ class DominoBoard extends React.Component{
     }
     return (
       <div className = "board">
+        <div className = "inlineText">
         <h1>{turnText}</h1>
+        <h3>{this.state.playerTookFromCash}</h3></div>
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
         <PlayerBox
         isItMyTurn   = {this.state.isItMyTurn} 
