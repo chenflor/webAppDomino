@@ -46,6 +46,23 @@ gameBoardsManagement.post('/insertDomino',(req, res) => {
     }	
 });
 
+gameBoardsManagement.post('/playerWon',(req,res) =>{
+    let userName = auth.getUserInfo(req.session.id).name;
+    let gameName = gameRooms.findGameNameByPlayer(userName);
+    if(gameName){
+        if(gameBoards.addPlayerWon(userName, gameName)){
+             res.sendStatus(200);
+        }
+        else{
+             res.sendStatus(403);
+        }	
+     }
+     else{
+         res.status(404).send("user not in game");
+     }
+}
+);
+
 
 
 

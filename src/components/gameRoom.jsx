@@ -35,6 +35,7 @@ export default class GameRoom extends React.Component {
     //     this.setState({currGame : currGame});
     // }
     updateGameFromServer(){
+        const that = this;
         // console.log("updating Game From Server");
         fetch('/games/getCurrentGame', {method:'Get', credentials: 'include'})
         .then(response=> {            
@@ -46,7 +47,7 @@ export default class GameRoom extends React.Component {
                     throw response;
                 }      
         }).then(currentGame =>{
-            this.setState({currGame : currentGame});
+            that.setState({currGame : currentGame});
             // console.log(currentGame);
             
         }).catch(err => {throw err});
@@ -95,5 +96,6 @@ export default class GameRoom extends React.Component {
 }
 
 GameRoom.propTypes ={
-    currGame : PropTypes.object
+    currGame : PropTypes.object,
+    exitGameRoom : PropTypes.func
 };

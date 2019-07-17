@@ -55,7 +55,12 @@ function findGameFromUserName(req,res,next){
 	}
 	next();
 }
+function initGame(i){
+	gamesList[i].registeredUsersList 	= []; 
+	gamesList[i].registeredPlayersCounter = 0; 
+	gamesList[i].gameStarted				= false;
 
+}
 function registerToGame(req, res, next) {
 	let index = findGame(req.body);
 	if(index == -1){
@@ -74,7 +79,14 @@ function registerToGame(req, res, next) {
 		let userName = auth.getUserInfo(req.session.id).name;
 		gamesList[index].registeredPlayersCounter++;
 		gamesList[index].registeredUsersList.push(userName);
-		let i = gameRooms.findOrCreateGameRoom(gamesList[index]);
+		var gameHasFinished = function(){
+			console.log("In Delete Game");
+			index= findGame(req.body);
+			if(index != -1){
+				initGame(index);
+			}
+		}
+		let i = gameRooms.findOrCreateGameRoom(gamesList[index],gameHasFinished);
 		gameRooms.addPlayerToGameRoom(i,userName);
 		if(gamesList[index].registeredPlayersCounter == gamesList[index].numOfPlayers){
 			gamesList[index].gameStarted = true;
@@ -106,9 +118,14 @@ function deleteGame(req, res, next) {
 	}
 }
 
+function deleteGameByName(name){
+	let index = findGame(req.body);
+	gamesList.splice(index, 1);
+}
+
 
 function getAllGames(){
 	return gamesList;
 }
 
-module.exports = {addGameToGamesList, getAllGames, registerToGame, deleteGame, findGameFromUserName}
+module.exports = {addGameToGamesList, getAllGames, registerToGame, deleteGame,deleteGameByName, findGameFromUserName}
