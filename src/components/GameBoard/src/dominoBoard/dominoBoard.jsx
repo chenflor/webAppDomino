@@ -47,8 +47,11 @@ class DominoBoard extends React.Component{
   }
   
   componentDidMount(){
-    this.getDominosBoard();
-    this.isItMyTurn();
+    if(!this.state.gameEnded){
+      this.getDominosBoard();
+      this.isItMyTurn();
+    }
+    
   }
   componentWillUnmount(){
     if (this.timeoutId) {
@@ -114,7 +117,10 @@ class DominoBoard extends React.Component{
                 
     }).then(isItMyTurnObj => {
         that.setState({isItMyTurn: isItMyTurnObj.isItMyTurn});
-        this.TurntimeoutId = setTimeout(this.isItMyTurn, 400);
+        if(!this.state.gameEnded){
+          this.TurntimeoutId = setTimeout(this.isItMyTurn, 400);
+        }
+        
         return this.state.isItMyTurn; 
     }).catch(err => {throw err});
   }
@@ -136,8 +142,9 @@ class DominoBoard extends React.Component{
           activePlayersList : board.activePlayersList,
           playersWon   : board.playersWon,
           validNumbers : board.validNumbers});
-
-        this.timeoutId = setTimeout(this.getDominosBoard, 400);
+        if(!this.state.gameEnded){
+          this.timeoutId = setTimeout(this.getDominosBoard, 400);
+        }
         return board; 
     }).catch(err => {throw err});
 
