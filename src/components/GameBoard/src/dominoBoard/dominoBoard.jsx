@@ -173,7 +173,7 @@ class DominoBoard extends React.Component{
   render(){
     if(this.state.gameEnded){
       return (<React.Fragment>
-                <GameInfo currentPlayerTurn = {this.state.currentPlayerTurn}
+                <GameInfo currentPlayerTurn = {""}
                             activePlayers     = {[]}
                           playersWon        = {this.state.playersWon}/>
                   <GameEnded/>
