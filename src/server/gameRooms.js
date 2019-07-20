@@ -132,9 +132,12 @@ function getARandomDomino(playerName, nextTurn){
     gameRooms[indexOfGame].cashOfDominos = tempArray;
     if(nextTurn){
         gameBoards.nextTurn(gameRooms[indexOfGame].game.gameName);
-        gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash = gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash + 1;
+        gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash++;
+        
         gameBoards.changeTookFromCash(playerName + " took from cash");
     }
+
+    gameBoards.updatePlayerScore(playerName,ans, true);
     return ans;
   }
 

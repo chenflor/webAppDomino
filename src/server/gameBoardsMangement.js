@@ -32,9 +32,10 @@ gameBoardsManagement.get('/isItMyTurn',(req, res) => {
 });
 
 gameBoardsManagement.post('/insertDomino',(req, res) => {
-    let gameName = gameRooms.findGameNameByPlayer(auth.getUserInfo(req.session.id).name);
+    let playerName = auth.getUserInfo(req.session.id).name;
+    let gameName = gameRooms.findGameNameByPlayer(playerName);
     if(gameName){
-       if(gameBoards.insertDominoToGameBoard(JSON.parse(req.body), gameName)){
+       if(gameBoards.insertDominoToGameBoard(JSON.parse(req.body), gameName, playerName)){
             res.sendStatus(200);
        }
        else{

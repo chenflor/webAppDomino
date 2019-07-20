@@ -18,7 +18,6 @@ class PlayerBox extends Component {
       this.state = {
         playerDominos : [],
         selectedDomino : undefined,
-        playerScore : 0
       };
     }
     componentWillMount(){
@@ -41,10 +40,6 @@ class PlayerBox extends Component {
     changeDominos(dominos){
       var total = 0;
       this.setState({playerDominos : dominos, selectedDomino : dominos[0]});
-      for(var i=0; i<this.state.playerDominos.length; i++ ){
-        total = total + this.state.playerDominos[i].firstNum + this.state.playerDominos.secondNum; 
-      }
-      this.setState({playerScore : total});
     }
 
     getNewDominoFromCash(newDomino){
@@ -60,7 +55,6 @@ class PlayerBox extends Component {
         this.state.selectedDomino = newDomino;
         this.setState({playerDominos : this.state.playerDominos, selectedDomino :newDomino});
         this.playerTookFromCash = this.playerTookFromCash + 1;
-        this.setPlayersScore(true,newDomino.firstNum + newDomino.secondNum);
       }
       
       this.addToNumOfTurns();
@@ -77,7 +71,6 @@ class PlayerBox extends Component {
           this.playerWon();
         }
       }
-      this.setPlayersScore(false,dominoToBeRemoved.firstNum + dominoToBeRemoved.secondNum);
     }
 
     playerWon(){
@@ -132,16 +125,7 @@ class PlayerBox extends Component {
         this.props.calcPotentialDominos(selectedDomino);
       }
     }
-    setPlayersScore(add,sum){
-      let total = 0;
-      if(add){
-        total = this.state.playerScore + sum;
-      }
-      else{
-        total = this.state.playerScore - sum;
-      }
-      this.setState({playerScore : total});
-    }
+
 
     addToNumOfTurns(){
       this.numOfTurns = this.numOfTurns + 1;
@@ -155,8 +139,7 @@ class PlayerBox extends Component {
             isItMyTurn = {this.props.isItMyTurn} 
             getNewDominoFromCash={this.getNewDominoFromCash.bind(this)} 
             numOfTimesPlayerTookFromCash  = {this.props.numOfTimesPlayerTookFromCash}
-            insertDominoToGameBoard = {this.insertDominoToGameBoard.bind(this)} 
-            setPlayersScore = {this.setPlayersScore.bind(this)}/>
+            insertDominoToGameBoard = {this.insertDominoToGameBoard.bind(this)}/>
             {this.gameStatus()}
             <DominoPieces 
             dominos = {this.state.playerDominos} 
@@ -164,11 +147,7 @@ class PlayerBox extends Component {
             validNumbers = {this.props.validNumbers}
             setSelected ={this.setSelected.bind(this)}/>
         </div>
-          <Statistics
-            numOfTurns = {this.numOfTurns}
-            isNewGame = {this.isNewGame}
-            playerTookFromCash = {this.playerTookFromCash}
-            playerScore = {this.state.playerScore}/>
+          <Statistics/>
         </div>
       );
     }
