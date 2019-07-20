@@ -5,9 +5,8 @@ const auth = require('./auth');
 
 const gameRoomsManagement = express.Router();
 
-//For Testing change later
-const NUMBER_OF_INITIAL_DOMINOS = 1;
-// const NUMBER_OF_INITIAL_DOMINOS = 6;
+// const NUMBER_OF_INITIAL_DOMINOS = 1;
+const NUMBER_OF_INITIAL_DOMINOS = 6;
 
 // gameRoomsManagement.post('/quitGame', gameRooms.quitGame, (req, res) => {		
 // 	res.sendStatus(200);	
