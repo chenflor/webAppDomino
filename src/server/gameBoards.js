@@ -11,17 +11,6 @@ const INITIAL_DOMINO_VALUES = {
 };
 const rows = 14;
 const cols = 7;
-const initBoardData = {
-    gameName          : "",
-    dominosBoard      : null,
-    gameEnded         : false,
-    validNumbers      : [0,1,2,3,4,5,6],
-    activePlayersList : [],
-    playersWon        : [],
-    firstRound        : true,
-    potentialDominos  : [],
-    currentPlayerTurn : ""
-};
 
 function addPlayerWon(playerName, gameName){
   let gameData = gamesData.get(gameName);
@@ -318,6 +307,14 @@ function getPlayerStatistics(playerName){
   return playerStatistics.get(playerName);
 }
 
+function getAllStatistics(){
+  ans = [];
+  playerStatistics.forEach((value,key) =>{
+    ans.push({ name : key, stati : value});
+  });
+  return ans;
+}
+
 function changeTookFromCash(newTookFromCash){
   tookFromCash = newTookFromCash;
 }
@@ -328,4 +325,4 @@ function SomeOneTookFromCash(){
 
 module.exports = {changeTookFromCash,SomeOneTookFromCash, playerStatistics, 
   getGameBoard, newGame, insertDominoToGameBoard, 
-  nextTurn, getPlayerStatistics, addPlayerWon, updatePlayerScore};
+  nextTurn, getPlayerStatistics, getAllStatistics, addPlayerWon, updatePlayerScore};
