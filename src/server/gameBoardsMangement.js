@@ -62,6 +62,10 @@ gameBoardsManagement.get('/getPlayerStatistics',(req, res) => {
 	res.json(gameBoards.getPlayerStatistics(auth.getUserInfo(req.session.id).name));	
 });
 
+gameBoardsManagement.get('/getAllStatistics',(req, res) => {
+	res.json(gameBoards.getAllStatistics());	
+});
+
 gameBoardsManagement.get('/SomeOneTookFromCash',(req, res) =>{
     res.json(gameBoards.SomeOneTookFromCash())
 });
