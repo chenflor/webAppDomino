@@ -33,6 +33,7 @@ class DominoBoard extends React.Component{
     };
     this.didSomeOneTookFromCash = this.didSomeOneTookFromCash.bind(this);
     this.getDominosBoard = this.getDominosBoard.bind(this);
+    this.updateBoard = this.updateBoard.bind(this);
     this.isItMyTurn = this.isItMyTurn.bind(this);
   }
 
@@ -91,7 +92,10 @@ class DominoBoard extends React.Component{
         this.timeOutIdCash = setTimeout(this.didSomeOneTookFromCash, 400);
     }).catch(err => {throw err});
   }
-
+  updateBoard(){
+    console.log("In update board");
+    this.getDominosBoard();
+  }
   insertDominoToGameBoard(playerDominoToBeInserted){
     fetch('/gameBoards/insertDomino', {
         method: 'POST',
@@ -189,6 +193,7 @@ class DominoBoard extends React.Component{
         <h3>{this.state.playerTookFromCash}</h3></div>
         <DominoGameBoard dominosBoard={this.state.dominosBoard}/>
         <PlayerBox
+        updateBoard = {this.updateBoard.bind(this)}
         isItMyTurn   = {this.state.isItMyTurn} 
         validNumbers = {this.state.validNumbers} 
         insertDominoToGameBoard ={this.insertDominoToGameBoard.bind(this)}

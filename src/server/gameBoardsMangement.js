@@ -17,6 +17,8 @@ gameBoardsManagement.get('/getGameBoard',(req, res) => {
         res.status(404).send("user not in game");
     }	
 });
+
+
 gameBoardsManagement.get('/isItMyTurn',(req, res) => {
     let playerName = auth.getUserInfo(req.session.id).name;
     let gameName = gameRooms.findGameNameByPlayer(playerName);
@@ -28,6 +30,15 @@ gameBoardsManagement.get('/isItMyTurn',(req, res) => {
         console.warn("called isItMyTurn without being in a game");
         res.json({isItMyTurn :false });
 
+    }
+});
+
+gameBoardsManagement.post('/imStuck',(req, res) => {
+    let playerName = auth.getUserInfo(req.session.id).name;
+    let gameName = gameRooms.findGameNameByPlayer(playerName);
+    if(gameName){
+        gameBoards.addToStuckPlayers(gameName,playerName);
+        res.sendStatus(200);
     }
 });
 

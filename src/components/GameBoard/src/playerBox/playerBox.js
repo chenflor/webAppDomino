@@ -19,10 +19,62 @@ class PlayerBox extends Component {
         playerDominos : [],
         selectedDomino : undefined,
       };
+
+      this.updateIfPlayerIsStuck = this.updateIfPlayerIsStuck.bind(this);
+      this.checkIsPlayerStuck = this.checkIsPlayerStuck.bind(this);
     }
     componentWillMount(){
       this.setInitialDominos();
     }
+    componentDidMount(){
+      this.updateIfPlayerIsStuck();
+    }
+    isCashEmpty(){
+      const that = this;
+      fetch('/gameRooms/isCashEmpty', {method: 'GET', credentials: 'include'})
+          .then(response => {            
+              if (!response.ok) {               
+                  throw response;
+              }
+              return response.json();
+                      
+          }).then(ans => {
+              return ans;
+          }).catch(err => {throw err});
+        
+    }
+    checkIsPlayerStuck(validNumbers,dominos){
+      if(dominos.length < this.maxNumberOfDominos && !this.isCashEmpty()){
+        return false;
+      }
+      
+      for(var domino of dominos){
+        if(validNumbers.includes(domino.firstNum) || validNumbers.includes(domino.secondNum)){
+          return false;
+        }
+      }
+
+      return true;
+
+    }
+    updateIfPlayerIsStuck(){
+      console.log("HERE");
+      this.TurntimeoutId = setTimeout(this.updateIfPlayerIsStuck, 400);
+      if(!this.props.isItMyTurn){
+        return;
+      }
+      if(this.checkIsPlayerStuck(this.props.validNumbers,this.state.playerDominos)){
+        
+          fetch('/gameBoards/imStuck', {method: 'POST', credentials: 'include'})
+          .then(response => {            
+              if (!response.ok) {               
+                  throw response;
+              }
+              });
+          this.props.updateBoard;
+        }
+      }
+  
     setInitialDominos(){
       const that = this;
       fetch('/gameRooms/getInitialDominos', {method: 'GET', credentials: 'include'})

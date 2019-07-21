@@ -108,6 +108,14 @@ function initDominoCashArray(){
     }
     return ansArray;
 }
+function isCashEmpty(playerName){
+    var indexOfGame = findGameIndexByPlayer(playerName);
+    let curGameCash = gameRooms[indexOfGame].cashOfDominos;
+    if(curGameCash.length<1){
+        return true;
+    }
+    return false;
+}
 
 function getARandomDomino(playerName, nextTurn){
     var indexOfGame = findGameIndexByPlayer(playerName);
@@ -133,7 +141,7 @@ function getARandomDomino(playerName, nextTurn){
     if(nextTurn){
         gameBoards.nextTurn(gameRooms[indexOfGame].game.gameName);
         gameBoards.playerStatistics.get(playerName).numOfTimesPlayerTookFromCash++;
-        
+        gameBoards.resetStuckPlayers(gameRooms[indexOfGame].game.gameName);
         gameBoards.changeTookFromCash(playerName + " took from cash");
     }
 
@@ -161,4 +169,4 @@ function gameHasFinshed(index){
 module.exports = {addPlayerToGameRoom, findOrCreateGameRoom, startGame, 
                   quitGame, gameHasFinshed, findRoom,
                   getGameRoom, removePlayerFromRoom, getARandomDomino,
-                  findGameNameByPlayer}
+                  findGameNameByPlayer, isCashEmpty}

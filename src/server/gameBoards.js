@@ -11,17 +11,33 @@ const INITIAL_DOMINO_VALUES = {
 };
 const rows = 14;
 const cols = 7;
-const initBoardData = {
-    gameName          : "",
-    dominosBoard      : null,
-    gameEnded         : false,
-    validNumbers      : [0,1,2,3,4,5,6],
-    activePlayersList : [],
-    playersWon        : [],
-    firstRound        : true,
-    potentialDominos  : [],
-    currentPlayerTurn : ""
-};
+
+function addToStuckPlayers(gameName, playerName){
+  let gameData = gamesData.get(gameName);
+  let currentPlayerTurn = gameData.currentPlayerTurn;
+  if(currentPlayerTurn != playerName){
+    console.warn("Bug in Stuck");
+    return;
+  }
+  let index = gameData.activePlayersList.indexOf(playerName);
+  if(index > -1){
+    let stuckIndex = gameData.stuckPlayers.indexOf(playerName);
+    if(stuckIndex == -1){
+      gameData.stuckPlayers.push(playerName);
+      if (gameData.stuckPlayers.length == gameData.activePlayersList.length){
+        gameData.gameEnded = true;
+        gameData.activePlayersList.sort(function(player1, player2){ playerStatistics.get(player1).playerScore - playerStatistics.get(player2).playerScore});
+        gameData.playersWon = gameData.activePlayersList;
+        return;
+      }
+    }
+    nextTurn(gameName);
+  }
+}
+function resetStuckPlayers(gameName){
+  let gameData = gamesData.get(gameName);
+  gameData.stuckPlayers = [];
+}
 
 function addPlayerWon(playerName, gameName){
   let gameData = gamesData.get(gameName);
@@ -76,6 +92,7 @@ function newGame(gameName , activePlayersList){
     newGameBoardData.activePlayersList = activePlayersList;
     newGameBoardData.potentialDominos = [];
     newGameBoardData.playersWon = [];
+    newGameBoardData.stuckPlayers = [];
     newGameBoardData.firstRound = true;
     newGameBoardData.dominosBoard = initBoard();
     newGameBoardData.validNumbers = [0,1,2,3,4,5,6];
@@ -283,6 +300,7 @@ function insertDominoToGameBoard(playerDominoToBeInserted, gameName, playerName)
       gamesData.get(gameName).dominosBoard[location.row][location.col] = dominoCell;
       gamesData.get(gameName).firstRound = false;
       insertSucsessfully = true;
+      resetStuckPlayers(gameName);
       nextTurn(gameName);
       updatePotentialDominoes(gameName, dominoCell, location.row, location.col);
       updatePlayerScore(playerName,playerDominoToBeInserted,false);
@@ -328,4 +346,5 @@ function SomeOneTookFromCash(){
 
 module.exports = {changeTookFromCash,SomeOneTookFromCash, playerStatistics, 
   getGameBoard, newGame, insertDominoToGameBoard, 
-  nextTurn, getPlayerStatistics, addPlayerWon, updatePlayerScore};
+  nextTurn, getPlayerStatistics, addPlayerWon,
+   updatePlayerScore,addToStuckPlayers,resetStuckPlayers};

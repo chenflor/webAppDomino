@@ -5,7 +5,7 @@ const auth = require('./auth');
 
 const gameRoomsManagement = express.Router();
 
-// const NUMBER_OF_INITIAL_DOMINOS = 1;
+// const NUMBER_OF_INITIAL_DOMINOS = 2;
 const NUMBER_OF_INITIAL_DOMINOS = 6;
 
 // gameRoomsManagement.post('/quitGame', gameRooms.quitGame, (req, res) => {		
@@ -16,7 +16,9 @@ const NUMBER_OF_INITIAL_DOMINOS = 6;
 // 	res.json(games.getAllGames());
 // });
 
-
+gameRoomsManagement.get('/isCashEmpty',(req, res) => {
+	res.json({ans : gameRooms.isCashEmpty(auth.getUserInfo(req.session.id).name)});	
+});
 gameRoomsManagement.get('/getARandomDomino',(req, res) => {
 	res.json(gameRooms.getARandomDomino(auth.getUserInfo(req.session.id).name,true));	
 });
