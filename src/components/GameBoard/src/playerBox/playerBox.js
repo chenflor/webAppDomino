@@ -29,6 +29,11 @@ class PlayerBox extends Component {
     componentDidMount(){
       this.updateIfPlayerIsStuck();
     }
+    componentWillUnmount(){
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+        }
+    }
     isCashEmpty(){
       const that = this;
       fetch('/gameRooms/isCashEmpty', {method: 'GET', credentials: 'include'})
@@ -59,7 +64,7 @@ class PlayerBox extends Component {
     }
     updateIfPlayerIsStuck(){
       console.log("HERE");
-      this.TurntimeoutId = setTimeout(this.updateIfPlayerIsStuck, 400);
+      this.timeoutId = setTimeout(this.updateIfPlayerIsStuck, 400);
       if(!this.props.isItMyTurn){
         return;
       }

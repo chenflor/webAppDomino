@@ -110,6 +110,9 @@ function initDominoCashArray(){
 }
 function isCashEmpty(playerName){
     var indexOfGame = findGameIndexByPlayer(playerName);
+    if(gameRooms[indexOfGame] ==undefined){
+        return true;
+    }
     let curGameCash = gameRooms[indexOfGame].cashOfDominos;
     if(curGameCash.length<1){
         return true;
