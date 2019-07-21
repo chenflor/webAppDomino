@@ -60,7 +60,14 @@ function initBoard() {
     }
     return board;
 };
-
+function updatePlayerScore(playerName, domino, isAdd){
+  if(domino){
+    let sum  = domino.firstNum + domino.secondNum;
+    if(!isAdd) sum *= -1;   
+    playerStatistics.get(playerName).playerScore += sum;
+  }
+  
+}
 function newGame(gameName , activePlayersList){
     console.log("new game in game boards" + gameName);
     var newGameBoardData = new Object();
@@ -267,7 +274,7 @@ function nextTurn(gameName){
   changeTookFromCash(" ");
 }
 
-function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
+function insertDominoToGameBoard(playerDominoToBeInserted, gameName, playerName){
   let insertSucsessfully = false;
   if(canDominoBeInsertedToGameBoard(playerDominoToBeInserted, gameName)){
     let dominoCell = createDominoCellFromPlayerDomino(playerDominoToBeInserted);
@@ -278,7 +285,7 @@ function insertDominoToGameBoard(playerDominoToBeInserted, gameName){
       insertSucsessfully = true;
       nextTurn(gameName);
       updatePotentialDominoes(gameName, dominoCell, location.row, location.col);
-
+      updatePlayerScore(playerName,playerDominoToBeInserted,false);
     }  
   }
   else{
@@ -319,4 +326,6 @@ function SomeOneTookFromCash(){
   return tookFromCash;
 }
 
-module.exports = {changeTookFromCash,SomeOneTookFromCash, playerStatistics, getGameBoard, newGame, insertDominoToGameBoard, nextTurn, getPlayerStatistics, addPlayerWon};
+module.exports = {changeTookFromCash,SomeOneTookFromCash, playerStatistics, 
+  getGameBoard, newGame, insertDominoToGameBoard, 
+  nextTurn, getPlayerStatistics, addPlayerWon, updatePlayerScore};
