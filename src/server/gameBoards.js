@@ -11,7 +11,6 @@ const INITIAL_DOMINO_VALUES = {
 };
 const rows = 14;
 const cols = 7;
-<<<<<<< HEAD
 
 function addToStuckPlayers(gameName, playerName){
   let gameData = gamesData.get(gameName);
@@ -39,8 +38,6 @@ function resetStuckPlayers(gameName){
   let gameData = gamesData.get(gameName);
   gameData.stuckPlayers = [];
 }
-=======
->>>>>>> 9e7a2ab536856d5973e436eb2a167fb17ac229b8
 
 function addPlayerWon(playerName, gameName){
   let gameData = gamesData.get(gameName);
